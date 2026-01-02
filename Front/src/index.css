@@ -1,0 +1,6 @@
+#root {
+  visibility: hidden; /* DOM invisible au départ */
+}
+#root.loaded {
+  visibility: visible; /* devient visible après le render */
+}
