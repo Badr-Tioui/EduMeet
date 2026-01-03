@@ -6,6 +6,8 @@ import App from "./App";
 import "./styles/register.css";
 import "./styles/login.css"; // si tu as d'autres styles
 import "./styles/ForgotPassword.css";  // tout ce qui est utilisé dans l'app
+import "./styles/ResetPassword.css";
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

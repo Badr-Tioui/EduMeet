@@ -3,7 +3,11 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
-require("dotenv").config();
+require('dotenv').config();
+
+
+console.log("EMAIL USER =", process.env.EMAIL_USER);
+console.log("EMAIL PASS =", process.env.EMAIL_PASS ? "OK" : "VIDE");
 
 const app = express();
 
