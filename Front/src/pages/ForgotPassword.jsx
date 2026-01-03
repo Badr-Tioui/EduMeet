@@ -1,37 +1,81 @@
-import { useState} from "react";
-import { Link } from "react-router-dom";
+import { useState, useLayoutEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import keyIcon from "../assets/image.png";
-import { useLayoutEffect } from "react";
 
 
+
+// === Composant EmailSent ===
+function EmailSent({ email, onContinue }) {
+  return (
+    <div className="framee">
+      <div className="carde">
+        <div className="icone">📧</div>
+
+        <h1>Email envoyé !</h1>
+        <p>
+          Un lien de réinitialisation a été envoyé à <b>{email}</b> Vérifiez Votre boite de réception et suivez leur instructions
+        </p>
+
+        <div className="stepse">
+          <p>1️⃣ Ouvrez votre email</p>
+          <p>2️⃣ Cliquez sur le lien</p>
+          <p>3️⃣ Créez un nouveau mot de passe</p>
+        </div>
+
+        <button className="btne" onClick={onContinue}>
+          Compris ✓
+        </button>
+      </div>
+    </div>
+  );
+}
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
+ const [success, setSuccess] = useState(false);
+  const navigate = useNavigate(); // ✅ AU BON ENDROIT
 
-useLayoutEffect(() => {
-  document.body.classList.add("forgot-page");
-  return () => document.body.classList.remove("forgot-page");
-}, []);
+  useLayoutEffect(() => {
+    document.body.classList.add("forgot-page");
+    return () => document.body.classList.remove("forgot-page");
+  }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Simulation envoi email
-    setTimeout(() => {
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+     if (res.ok && data.success) {
+        setSuccess(true); // affiche EmailSent
+      } else {
+        alert(data.message || "Erreur");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Erreur serveur");
+    } finally {
       setLoading(false);
-      setSent(true);
-    }, 1500);
+    }
   };
 
+
+  if (success) {
+    return <EmailSent email={email} onContinue={() => navigate("/login")} />;
+  }
   return (
     <div className="frame">
       <div className="card">
         <div className="icon">
-  <img src={keyIcon} alt="Clé" />
-</div>
-
+          <img src={keyIcon} alt="Clé" />
+        </div>
 
         <h1>Mot de passe oublié ?</h1>
         <p className="subtitle">
@@ -44,6 +88,7 @@ useLayoutEffect(() => {
               <span className="reset-label-icon">📧</span>
               Adresse e-mail
             </label>
+
             <div className="reset-input-wrapper">
               <input
                 type="email"
@@ -53,7 +98,8 @@ useLayoutEffect(() => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <div className="reset-input-icon">
+
+               <div className="reset-input-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                   <polyline points="22,6 12,13 2,6" />
@@ -63,11 +109,11 @@ useLayoutEffect(() => {
           </div>
 
           <button type="submit" className="btn" disabled={loading}>
-            {loading ? "Envoi en cours..." : sent ? "Lien envoyé " : "Envoyer le lien"}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            {loading ? "Envoi en cours..." : "Envoyer le lien"}
           </button>
         </form>
 
+      
         <Link to="/login" className="reset-back-link">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="19" y1="12" x2="5" y2="12" />
@@ -81,3 +127,4 @@ useLayoutEffect(() => {
 }
 
 export default ForgotPassword;
+

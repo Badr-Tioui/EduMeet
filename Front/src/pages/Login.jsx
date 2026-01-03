@@ -74,7 +74,7 @@ const handleSubmit = async (e) => {
     if (result.success) {
       localStorage.setItem("token", result.token);
       localStorage.setItem("user", JSON.stringify(result.data));
-      setUserName(result.data.nom || "Étudiant");
+      setUserName(result.data.nomComplet || "Étudiant");
       setSuccess(true);
     } else {
       // Afficher l'erreur sous le champ mot de passe

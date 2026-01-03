@@ -41,6 +41,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "licence1",
   },
+  resetPasswordToken: String,
+resetPasswordExpire: Date,
+
   role: {
     type: String,
     enum: ["etudiant", "professeur", "admin"],
@@ -52,11 +55,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre("save", async function () {
-  if (!this.isModified("password")) return; // plus de next
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-});
 
 // 🔑 Vérification du mot de passe
 userSchema.methods.comparePassword = async function (candidatePassword) {
