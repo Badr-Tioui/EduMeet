@@ -154,6 +154,7 @@ export default function StudentDashboard() {
         whatsapp: p.whatsapp || p.whats || "",
         url: p.url || p.link || "",
         mapsUrl: p.mapsUrl || "",
+        imageUrl: p.imageUrl || "",
       }));
 
       setResults((prev) => ({ ...prev, inPerson }));
@@ -899,20 +900,51 @@ export default function StudentDashboard() {
                         ) : (
                           results.inPerson.map((p, idx) => (
                             <div className="result-item" key={`ip-${idx}`}>
-                              <div className="meta">
-                                <div className="title">{p.name}</div>
-                                <div className="sub">{p.address}</div>
+                              <div className="meta" style={{ display: "flex", gap: "14px", alignItems: "center" }}>
+                                {/* ✅ photo */}
+                                <div
+                                  style={{
+                                    width: 54,
+                                    height: 54,
+                                    borderRadius: 14,
+                                    overflow: "hidden",
+                                    flex: "0 0 auto",
+                                    background: "rgba(255,255,255,0.06)",
+                                  }}
+                                >
+                                  {p.imageUrl ? (
+                                    <img
+                                      src={p.imageUrl}
+                                      alt={p.name}
+                                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                      onError={(e) => {
+                                        // si l’image est bloquée/404 → on l’enlève
+                                        e.currentTarget.style.display = "none";
+                                      }}
+                                    />
+                                  ) : (
+                                    <div
+                                      style={{
+                                        width: "100%",
+                                        height: "100%",
+                                        display: "grid",
+                                        placeItems: "center",
+                                        fontSize: 18,
+                                        opacity: 0.7,
+                                      }}
+                                    >
+                                      <i className="fa-regular fa-user" />
+                                    </div>
+                                  )}
+                                </div>
 
-                                <div className="sub">
-                                  <i className="fa-solid fa-phone" /> {p.phone}
-                                  {p.whatsapp ? (
-                                    <>
-                                      {" "}
-                                      • <i className="fa-brands fa-whatsapp" /> {p.whatsapp}
-                                    </>
-                                  ) : null}
+                                {/* ✅ texte */}
+                                <div>
+                                  <div className="title">{p.name}</div>
+                                  <div className="sub">{p.address}</div>
                                 </div>
                               </div>
+
 
                               {/* ✅ ACTIONS (PRO) */}
                               <div className="action" style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
