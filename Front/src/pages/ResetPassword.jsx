@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useLayoutEffect } from "react";
+import "../styles/ResetPassword.css";
 
 function ResetPassword() {
   const [password, setPassword] = useState("");

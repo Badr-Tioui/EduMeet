@@ -2,6 +2,25 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 
 // --- Helpers ---
+function getImageFromCSE(item) {
+  const pm = item?.pagemap || {};
+  const thumb = pm?.cse_thumbnail?.[0]?.src;
+  const img = pm?.cse_image?.[0]?.src;
+  return thumb || img || "";
+}
+
+function extractOgImage(html) {
+  // og:image
+  const og = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)?.[1];
+  if (og) return og;
+
+  // twitter:image
+  const tw = html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i)?.[1];
+  if (tw) return tw;
+
+  return "";
+}
+
 function normalizePhone(raw) {
   if (!raw) return "";
   let s = String(raw).trim().replace(/[^\d+]/g, "");
@@ -34,7 +53,9 @@ function extractPhones(html) {
 
   // text patterns (+212 / 06 / 07)
   const text =
-    html.match(/(\+212\s?[67]\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}|0[67]\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2})/g) || [];
+    html.match(
+      /(\+212\s?[67]\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}|0[67]\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2})/g
+    ) || [];
   for (const t of text) {
     const n = normalizePhone(t);
     if (n) out.add(n);
@@ -44,7 +65,6 @@ function extractPhones(html) {
 }
 
 function extractAddressBasic(html) {
-  // JSON-LD address (best effort)
   const street = html.match(/"streetAddress"\s*:\s*"([^"]+)"/i)?.[1] || "";
   const locality = html.match(/"addressLocality"\s*:\s*"([^"]+)"/i)?.[1] || "";
   const region = html.match(/"addressRegion"\s*:\s*"([^"]+)"/i)?.[1] || "";
@@ -58,16 +78,7 @@ function mapsDirections(destination) {
 
 function classifyResult(url = "") {
   const u = url.toLowerCase();
-
-  // Plateformes “profs” (tel souvent privé)
-  const platforms = [
-    "superprof",
-    "apprentus",
-    "preply",
-    "tutoring",
-    "linkedin",
-  ];
-
+  const platforms = ["superprof", "apprentus", "preply", "tutoring", "linkedin"];
   const isPlatform = platforms.some((d) => u.includes(d));
   return { isPlatform };
 }
@@ -91,7 +102,7 @@ async function fetchHtml(url) {
     headers: {
       "User-Agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome Safari",
-      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     },
     validateStatus: (s) => s >= 200 && s < 400,
   });
@@ -108,17 +119,17 @@ function findContactUrl(baseUrl, html) {
       }))
       .get();
 
-    // candidates by label
-    const cand = anchors.find((a) => a.text.includes("contact") || a.text.includes("contacter") || a.text.includes("nous contacter"));
+    const cand = anchors.find(
+      (a) => a.text.includes("contact") || a.text.includes("contacter") || a.text.includes("nous contacter")
+    );
+
     if (cand?.href) {
-      // absolute or relative
       const href = cand.href.trim();
       if (href.startsWith("http")) return href;
       const u = new URL(baseUrl);
       return new URL(href, u.origin).toString();
     }
 
-    // fallback common paths
     const u = new URL(baseUrl);
     return `${u.origin}/contact`;
   } catch {
@@ -126,7 +137,70 @@ function findContactUrl(baseUrl, html) {
   }
 }
 
-// --- Controller ---
+/* =========================
+   ✅ NOUVEAU: Scoring + Query "Soutien"
+========================= */
+function scoreTutoringIntent(item) {
+  const t = `${item.title || ""} ${item.snippet || ""} ${item.link || ""}`.toLowerCase();
+
+  const POS = [
+    "cours particuliers",
+    "soutien",
+    "soutien scolaire",
+    "professeur particulier",
+    "cours à domicile",
+    "a domicile",
+    "tuteur",
+    "coach",
+    "annonce",
+    "tarif",
+    "dh",
+    "mad",
+    "réserver",
+    "reservation",
+    "heures",
+    "h/",
+  ];
+
+  const NEG = [
+    "université",
+    "faculté",
+    "departement",
+    "enseignant-chercheur",
+    "chercheur",
+    "publication",
+    "research",
+    "paper",
+    "portfolio",
+    "cv",
+    "linkedin",
+    "wikipedia",
+    ".pdf",
+  ];
+
+  let score = 0;
+  for (const w of POS) if (t.includes(w)) score += 2;
+  for (const w of NEG) if (t.includes(w)) score -= 3;
+
+  const bonusDomains = ["apprentus", "superprof", "preply", "tutor", "cours"];
+  if (bonusDomains.some((d) => (item.link || "").toLowerCase().includes(d))) score += 2;
+
+  return score;
+}
+
+function buildQuery(city, subject) {
+  const cityQ = `"${city}" OR "${city.replace("è", "e").replace("é", "e")}"`;
+  const subjQ = `"${subject}" OR ${subject}`;
+
+  return `("cours particuliers" OR "soutien scolaire" OR "soutien" OR "professeur particulier" OR "cours à domicile" OR "annonce")
+(${subjQ})
+(${cityQ})
+-université -faculté -departement -research -publication -cv -portfolio -linkedin -wikipedia -pdf`;
+}
+
+/* =========================
+   ✅ Controller
+========================= */
 exports.inpersonSearch = async (req, res) => {
   try {
     const { city, subject } = req.body;
@@ -134,21 +208,34 @@ exports.inpersonSearch = async (req, res) => {
       return res.status(400).json({ message: "city et subject sont obligatoires." });
     }
 
-    // ✅ Requête mixte “centres + profs”
-    // - centres / soutien : augmente chances de tel public
-    // - prof / cours particuliers : garde les profils plateformes
-    const q =
-      `(${subject} ${city} "cours particuliers") OR ` +
-      `(prof ${subject} ${city}) OR ` +
-      `("centre de soutien" ${subject} ${city}) OR ` +
-      `("soutien scolaire" ${subject} ${city}) OR ` +
-      `("centre de formation" ${subject} ${city})`;
+    // ✅ 1) Query orientée “soutien”
+    const q = buildQuery(city, subject);
 
+    // ✅ 2) Google CSE
     const items = await googleCSE(q, 10);
-    const top = items.slice(0, 8);
 
+    // ✅ 3) Filtrage par scoring (tutoring intent)
+    const filtered = items
+      .map((it) => ({ it, score: scoreTutoringIntent(it) }))
+      .filter((x) => x.score >= 3)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8)
+      .map((x) => x.it);
+
+    // ✅ 4) Si rien → indisponible
+    if (filtered.length === 0) {
+      return res.json({
+        city,
+        subject,
+        inPerson: [],
+        message: `Indisponible: ما لقيناش أساتذة soutien لـ ${subject} فـ ${city}.`,
+      });
+    }
+
+    // ✅ 5) Enrichissement (scrape tel + contact)
     const results = await Promise.all(
-      top.map(async (it) => {
+      filtered.map(async (it) => {
+        let imageUrl = getImageFromCSE(it);
         const name = it.title || "Prof / Centre";
         const url = it.link || "";
         const snippet = it.snippet || "";
@@ -160,27 +247,28 @@ exports.inpersonSearch = async (req, res) => {
         let address = "";
         let mapsUrl = mapsDirections(`${name} ${city}`);
 
-        // ⚙️ Si pas d’URL, fallback
         if (!url) {
-          return { name, address: snippet, phone, whatsapp, url, mapsUrl };
+          return { name, address: snippet, phone, whatsapp, url, mapsUrl, kind: isPlatform ? "prof" : "centre" };
         }
 
-        // ⚡ Pour plateformes: on ne s’acharne pas (tel souvent absent), on garde le lien
-        // Pour centres: on tente HTML + page contact
         try {
           const html = await fetchHtml(url);
 
-          // 1) Tel/WhatsApp sur page principale
+          if (!imageUrl) {
+            const ogImg = extractOgImage(html);
+            if (ogImg) imageUrl = ogImg;
+          }
+
+          // phone on main page
           const phones = extractPhones(html);
           if (phones.length) {
             phone = phones[0];
             whatsapp = phones.length > 1 ? phones[1] : "";
           }
 
-          // 2) Adresse JSON-LD si possible
           address = extractAddressBasic(html);
 
-          // 3) Si centre (non-platform) et pas de tel → tenter page contact
+          // if not platform and no phone → try contact page
           if (!isPlatform && phone === "Non disponible") {
             const contactUrl = findContactUrl(url, html);
             if (contactUrl) {
@@ -196,17 +284,15 @@ exports.inpersonSearch = async (req, res) => {
             }
           }
 
-          // 4) Itinéraire : si adresse trouvée → destination = adresse, sinon name+city
           const destination = address && address.length > 6 ? address : `${name} ${city}`;
           mapsUrl = mapsDirections(destination);
         } catch {
-          // si scrape échoue, on garde snippet + lien
+          // ignore scrape errors
         }
 
-        // fallback address = snippet
         if (!address) address = snippet;
 
-        return { name, address, phone, whatsapp, url, mapsUrl, kind: isPlatform ? "prof" : "centre" };
+        return { name, address, phone, whatsapp, url, mapsUrl, imageUrl, kind: isPlatform ? "prof" : "centre" };
       })
     );
 

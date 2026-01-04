@@ -1,6 +1,7 @@
 import { useState, useLayoutEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import keyIcon from "../assets/image.png";
+import "../styles/ForgotPassword.css";  // tout ce qui est utilisé dans l'app
 
 
 
