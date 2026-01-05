@@ -1,8 +1,13 @@
 import { useEffect } from "react";
-import "./HomePage.css";
+import { Link } from "react-router-dom";
+import "../StylesHome/HomePage.css";
 
 export default function HomePage() {
   useEffect(() => {
+    // Ajouter une classe spécifique à body pour cette page
+    document.body.classList.add("home-page");
+
+    // ===== Ton code JS pour reveal, counters, navbar, halos, drawer =====
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
@@ -36,7 +41,6 @@ export default function HomePage() {
       return () => io.disconnect();
     };
 
-    // ===== Counters =====
     const countersOnView = () => {
       const counters = document.querySelectorAll(".count");
       if (!counters.length) return;
@@ -76,7 +80,6 @@ export default function HomePage() {
       return () => io.disconnect();
     };
 
-    // ===== Navbar blur =====
     const navbarOnScroll = () => {
       const nav = document.querySelector(".nav");
       if (!nav) return;
@@ -91,7 +94,6 @@ export default function HomePage() {
       return () => window.removeEventListener("scroll", onScroll);
     };
 
-    // ===== Parallax halos =====
     const parallaxHalos = () => {
       if (prefersReduced) return;
 
@@ -123,7 +125,6 @@ export default function HomePage() {
       return () => window.removeEventListener("scroll", onScroll);
     };
 
-    // ===== Mobile drawer =====
     const mobileDrawer = () => {
       const btn = document.getElementById("burgerBtn");
       const drawer = document.getElementById("drawer");
@@ -155,19 +156,22 @@ export default function HomePage() {
     };
 
     const cleanups = [];
-    const c1 = revealOnScroll();
-    if (typeof c1 === "function") cleanups.push(c1);
-    const c2 = countersOnView();
-    if (typeof c2 === "function") cleanups.push(c2);
-    const c3 = navbarOnScroll();
-    if (typeof c3 === "function") cleanups.push(c3);
-    const c4 = parallaxHalos();
-    if (typeof c4 === "function") cleanups.push(c4);
-    const c5 = mobileDrawer();
-    if (typeof c5 === "function") cleanups.push(c5);
+    [revealOnScroll, countersOnView, navbarOnScroll, parallaxHalos, mobileDrawer].forEach(
+      (fn) => {
+        const c = fn();
+        if (typeof c === "function") cleanups.push(c);
+      }
+    );
 
-    return () => cleanups.forEach((fn) => fn());
+    // Cleanup au démontage
+    return () => {
+      document.body.classList.remove("home-page");
+      cleanups.forEach((fn) => fn());
+    };
   }, []);
+
+ 
+
 
   return (
     <>
@@ -194,10 +198,10 @@ export default function HomePage() {
           </nav>
 
           <div className="nav-actions">
-            <a className="btn btn-outline" href="/student">
+            <a className="btn btn-outline" href="/login">
               Connexion
             </a>
-            <a className="btn btn-primary" href="/student">
+            <a className="btn btn-primary" href="/register">
               S’inscrire
             </a>
 
@@ -213,14 +217,15 @@ export default function HomePage() {
           <a href="#how">Comment ça marche</a>
           <a href="#analytics">Analytics</a>
           <a href="#faq">FAQ</a>
-          <div className="drawer-actions">
-            <a className="btn btn-outline" href="/student">
-              Connexion
-            </a>
-            <a className="btn btn-primary" href="/student">
-              S’inscrire
-            </a>
-          </div>
+         <div className="drawer-actions">
+          <Link className="btn btn-outline" to="/login">
+          Connexion
+        </Link>
+
+        <Link className="btn btn-primary" to="/register">
+           S’inscrire
+        </Link>
+      </div>
         </div>
       </header>
 

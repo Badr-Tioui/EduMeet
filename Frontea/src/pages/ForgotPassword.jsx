@@ -1,6 +1,7 @@
 import { useState, useLayoutEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import keyIcon from "../assets/image.png";
+import "../styles/ForgotPassword.css";  // tout ce qui est utilisé dans l'app
 
 
 
@@ -10,7 +11,6 @@ function EmailSent({ email, onContinue }) {
     <div className="framee">
       <div className="carde">
         <div className="icone">📧</div>
-
         <h1>Email envoyé !</h1>
         <p>
           Un lien de réinitialisation a été envoyé à <b>{email}</b> Vérifiez Votre boite de réception et suivez leur instructions

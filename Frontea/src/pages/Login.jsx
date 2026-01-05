@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { Link,useNavigate } from "react-router-dom";
+import "../styles/login.css"; // si tu as d'autres styles
 
 /* ================= SUCCESS MESSAGE ================= */
 function LoginSuccess({ nom, onContinue }) {
@@ -91,7 +92,7 @@ const handleSubmit = async (e) => {
     return (
       <LoginSuccess
         nom={userName}
-        onContinue={() => navigate("/dashboard")}
+        onContinue={() => navigate("/student")}
       />
     );
   }

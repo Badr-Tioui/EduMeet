@@ -2,11 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 
-// ✅ Import global des CSS
-import "./styles/register.css";
-import "./styles/login.css"; // si tu as d'autres styles
-import "./styles/ForgotPassword.css";  // tout ce qui est utilisé dans l'app
-import "./styles/ResetPassword.css";
+
+
+
+
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

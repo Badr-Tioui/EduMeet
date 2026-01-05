@@ -1,11 +1,25 @@
 import { useMemo, useState } from "react";
-import "./StudentDashboard.css";
-
+import "../StylesHome/StudentDashboard.css";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 export default function StudentDashboard() {
+
+ useEffect(() => {
+  document.body.classList.add("student-dashboard-page");
+
+  return () => {
+    document.body.classList.remove("student-dashboard-page");
+  };
+}, []);
+
+
   const [cityAnimKey, setCityAnimKey] = useState(0);
   const [activeView, setActiveView] = useState("dashboard");
   const [activeTab, setActiveTab] = useState("learn-tab");
   const [exploreQuery, setExploreQuery] = useState("");
+  const navigate = useNavigate();
+const [isEditing, setIsEditing] = useState(false);
+const [avatarPreview, setAvatarPreview] = useState("");
 
   // ✅ NOUVEAU: States Présentiel (respect Rules of Hooks)
   const [inPersonStep, setInPersonStep] = useState("city"); // "city" | "subject" | "results"
@@ -13,6 +27,72 @@ export default function StudentDashboard() {
   const [inPersonSubject, setInPersonSubject] = useState("");
   const [inPersonLoading, setInPersonLoading] = useState(false);
 
+
+  // ===== PROFILE STATE (LOCALSTORAGE) =====
+const [profileData, setProfileData] = useState({
+  nom: "",
+  prenom: "",
+  numeroEtudiant: "",
+  dateNaissance: "",
+  anneeUniversitaire: "",
+  sexe: "",
+  parent1: "",
+  parent2: "",
+  paysOrigine: "",
+  telephone: "",
+  filiere: "",
+  email: "",
+});
+
+// Charger depuis localStorage au montage
+useEffect(() => {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  if (storedUser) {
+    setProfileData({
+      nom: storedUser.nom || "",
+      prenom: storedUser.prenom || "",
+      numeroEtudiant: storedUser.numeroEtudiant || "",
+      dateNaissance: storedUser.dateNaissance?.substring(0, 10) || "",
+      anneeUniversitaire: storedUser.anneeUniversitaire || "",
+      sexe: storedUser.sexe || "",
+      parent1: storedUser.parent1 || "",
+      parent2: storedUser.parent2 || "",
+      paysOrigine: storedUser.paysOrigine || "",
+      telephone: storedUser.telephone || "",
+      filiere: storedUser.filiere || "",
+      email: storedUser.email || "",
+    });
+  }
+}, []);
+
+
+
+const handleProfileChange = (e) => {
+  const { name, value } = e.target;
+  setProfileData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
+
+const saveProfileToLocalStorage = () => {
+  const oldUser = JSON.parse(localStorage.getItem("user")) || {};
+  const updatedUser = { ...oldUser, ...profileData };
+
+  localStorage.setItem("user", JSON.stringify(updatedUser));
+  alert("Profil enregistré localement ✅");
+};
+// ===== HANDLE AVATAR CHANGE =====
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Prévisualisation locale
+    const previewUrl = URL.createObjectURL(file);
+    setAvatarPreview(previewUrl);
+
+   
+  };
   const [results, setResults] = useState({
     videos: [],
     pdfCourses: [],
@@ -67,9 +147,8 @@ export default function StudentDashboard() {
       quiz: null,
       inPerson: [],
     }));
-
     try {
-      const res = await fetch("http://localhost:5000/api/search", {
+      const res = await fetch("http://localhost:5001/api/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query, level: "debutant" }),
@@ -130,7 +209,7 @@ export default function StudentDashboard() {
     setResults((p) => ({ ...p, inPerson: [] }));
 
     try {
-      const res = await fetch("http://localhost:5000/api/inperson-search", {
+      const res = await fetch("http://localhost:5001/api/inperson-search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -184,6 +263,10 @@ export default function StudentDashboard() {
     return "https://ui-avatars.com/api/?name=Yassine+Student&background=2563EB&color=fff";
   }, []);
 
+// Pour récupérer
+const user = JSON.parse(localStorage.getItem("user")) || {};
+
+
   return (
     <div className="app-container">
       {/* Sidebar */}
@@ -232,9 +315,12 @@ export default function StudentDashboard() {
         </nav>
 
         <div className="sidebar-footer">
-          <button className="nav-item logout-btn" type="button" onClick={() => (window.location.href = "/")}>
+          <button className="redaze" type="button" onClick={() => (window.location.href = "/")}>
             <i className="fa-solid fa-right-from-bracket" />
-            <span>Déconnexion</span>
+           
+                Déconnexion
+          
+            
           </button>
         </div>
       </aside>
@@ -247,8 +333,13 @@ export default function StudentDashboard() {
             <header className="top-header">
               <div className="header-welcome">
                 <h1>
-                  Bonjour, <span className="highlight-name">Yassine</span> 👋
-                </h1>
+  Bonjour,{" "}
+  <span className="highlight-name">
+    {user.nomComplet || `${user.prenom || ""} ${user.nom || ""}` || "Étudiant"}
+  </span>{" "}
+  👋
+</h1>
+
                 <p className="subtitle">Ready pour booster ton niveau aujourd&apos;hui ?</p>
               </div>
 
@@ -406,102 +497,280 @@ export default function StudentDashboard() {
           </section>
         )}
 
-        {/* ===================== PROFILE ===================== */}
-        {activeView === "profile" && (
-          <section id="profile-view" className="view-section active">
-            <header className="top-header">
-              <div className="header-welcome">
-                <h1>Mon Profil</h1>
-                <p className="subtitle">Gérez vos informations personnelles et préférences</p>
-              </div>
-            </header>
+    {/* ===================== PROFILE ===================== */}
 
-            <div className="profile-layout">
-              <div className="profile-col-main">
-                <div className="card profile-form-card">
-                  <h3>Informations Personnelles</h3>
 
-                  <form className="styled-form" onSubmit={(e) => e.preventDefault()}>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Nom</label>
-                        <input className="input-field" type="text" defaultValue="Student" />
-                      </div>
-                      <div className="form-group">
-                        <label>Prénom</label>
-                        <input className="input-field" type="text" defaultValue="Yassine" />
-                      </div>
-                    </div>
+{activeView === "profile" && (
+  <section id="profile-view" className="view-section active">
 
-                    <div className="form-group">
-                      <label>Email</label>
-                      <input className="input-field" type="email" defaultValue="yassine@example.com" />
-                    </div>
-
-                    <div className="form-group">
-                      <label>Téléphone</label>
-                      <input className="input-field" type="tel" defaultValue="+212 6 12 34 56 78" />
-                    </div>
-
-                    <div className="form-actions">
-                      <button className="btn btn-primary" type="button">
-                        Enregistrer
-                      </button>
-                    </div>
-                  </form>
-                </div>
-
-                <div className="card security-card">
-                  <h3>Sécurité</h3>
-                  <div className="security-item">
-                    <div className="sec-info">
-                      <strong>Mot de passe</strong>
-                      <span>Dernière modification il y a 3 mois</span>
-                    </div>
-                    <button className="btn btn-outline" type="button">
-                      Modifier
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="profile-col-side">
-                <div className="card history-card">
-                  <h3>Derniers packs étudiés</h3>
-                  <ul className="history-list">
-                    <li>
-                      <span className="course-name">Pointeurs C++</span>
-                      <span className="course-date">Aujourd’hui</span>
-                    </li>
-                    <li>
-                      <span className="course-name">SQL JOIN</span>
-                      <span className="course-date">Hier</span>
-                    </li>
-                    <li>
-                      <span className="course-name">Intégrales</span>
-                      <span className="course-date">05 Oct</span>
-                    </li>
-                  </ul>
-                  <a href="#" className="link-more" onClick={(e) => e.preventDefault()}>
-                    Voir mes packs
-                  </a>
-                </div>
-
-                <div className="card preferences-card">
-                  <h3>Préférences</h3>
-                  <div className="toggle-group">
-                    <label className="toggle-label">Notifications Email</label>
-                    <input type="checkbox" defaultChecked className="toggle-switch" />
-                  </div>
-                  <div className="toggle-group">
-                    <label className="toggle-label">Rappels SMS</label>
-                    <input type="checkbox" className="toggle-switch" />
-                  </div>
-                </div>
-              </div>
+    <div className="ip-avatar-section">
+        <div className="ip-avatar-container">
+          <div className="ip-avatar-ring">
+            <div className="ip-avatar-shell">
+              <img
+                src={
+                  avatarPreview ||
+                  "https://ui-avatars.com/api/?name=Student&background=2563EB&color=fff"
+                }
+                alt="Avatar"
+                className="ip-avatar-image"
+              />
+              <label htmlFor="avatar-input" className="ip-avatar-overlay">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                  <circle cx="12" cy="13" r="4" />
+                </svg>
+              </label>
+              <input
+                id="avatar-input"
+                type="file"
+                accept="image/png,image/jpeg"
+                style={{ display: "none" }}
+                onChange={handleAvatarChange}
+              />
             </div>
-          </section>
-        )}
+          </div>
+        </div>
+      </div>
+    <header className="top-header1">
+      <div className="header-welcomee">
+        <h1>
+          <span className="highlight-name">
+            {user?.nomComplet ||
+              `${user?.prenom || ""} ${user?.nom || ""}` ||
+              "Étudiant"}
+          </span>
+        </h1>
+      </div>
+    </header>
+
+    <div className="profile-layout">
+      {/* ===== COLONNE PRINCIPALE ===== */}
+      <div className="profile-col-main">
+        <div className="cardee profile-form-card">
+          <div className="ridb">
+            <span class="ip-section-icon">📝</span>
+               <h2>Informations Personnelles</h2>
+          </div>
+         
+          <form className="styled-form" onSubmit={(e) => e.preventDefault()}>
+  <div className="form-row">
+    <div className="form-group">
+      <label>Nom</label>
+      <input
+        className="input-field"
+        type="text"
+        name="nom"
+        value={profileData.nom}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Prénom</label>
+      <input
+        className="input-field"
+        type="text"
+        name="prenom"
+        value={profileData.prenom}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+  </div>
+
+  <div className="form-row">
+    <div className="form-group">
+      <label>Numéro Étudiant</label>
+      <input
+        className="input-field"
+        type="text"
+        name="numeroEtudiant"
+        value={profileData.numeroEtudiant}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Date de Naissance</label>
+      <input
+        className="input-field"
+        type="date"
+        name="dateNaissance"
+        value={profileData.dateNaissance}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+  </div>
+
+  <div className="form-row">
+    <div className="form-group">
+      <label>Année Universitaire</label>
+      <input
+        className="input-field"
+        type="text"
+        name="anneeUniversitaire"
+        value={profileData.anneeUniversitaire}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Sexe</label>
+      <input
+        className="input-field"
+        type="text"
+        name="sexe"
+        value={profileData.sexe}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+  </div>
+
+  <div className="form-row">
+    <div className="form-group">
+      <label>Nom Parent 1</label>
+      <input
+        className="input-field"
+        type="text"
+        name="parent1"
+        value={profileData.parent1}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Nom Parent 2</label>
+      <input
+        className="input-field"
+        type="text"
+        name="parent2"
+        value={profileData.parent2}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+  </div>
+
+  <div className="form-row">
+    <div className="form-group">
+      <label>Pays d'origine</label>
+      <input
+        className="input-field"
+        type="text"
+        name="paysOrigine"
+        value={profileData.paysOrigine}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Email</label>
+      <input
+        className="input-field"
+        type="email"
+        value={profileData.email}
+        disabled
+      />
+    </div>
+  </div>
+
+  <div className="form-row">
+    <div className="form-group">
+      <label>Téléphone</label>
+      <input
+        className="input-field"
+        type="tel"
+        name="telephone"
+        value={profileData.telephone}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Filière</label>
+      <input
+        className="input-field"
+        type="text"
+        name="filiere"
+        value={profileData.filiere}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+  </div>
+
+  <div className="form-actions">
+    <button
+      className="btn btn-primary"
+      type="button"
+      onClick={() => {
+        saveProfileToLocalStorage();
+        setIsEditing(false);
+      }}
+    >
+      Enregistrer
+    </button>
+
+       <button
+      className="btneze-outline"
+      type="button"
+      onClick={() => setIsEditing(true)}
+    >
+      Modifier
+    </button>
+  </div>
+</form>
+
+        </div>
+
+        {/* ===== SÉCURITÉ ===== */}
+       <div className="cardee security-card">
+
+        <div className="ridb">
+           <h2>Sécurité</h2>
+        </div>
+     
+
+      <div className="security-item">
+        <div className="sec-info">
+          <strong>Mot de passe</strong>
+          <span>  : Dernière modification il y a 3 mois</span>
+        </div>
+
+        <button
+          className="btn btn-outline"
+          type="button"
+          onClick={() => navigate("/forgot-password")}
+        >
+    Modifier
+        </button>
+      </div>
+    </div>
+      </div>
+
+      {/* ===== AVATAR ===== */}
+   
+    </div>
+  </section>
+)}
+
+
+
+
 
         {/* ===================== LEARN ===================== */}
         {activeView === "learn" && (
@@ -666,11 +935,11 @@ export default function StudentDashboard() {
 
                             <div className="action">
                               {v.url ? (
-                                <a className="btn btn-outline" href={v.url} target="_blank" rel="noreferrer">
+                                <a className="btn btn-outlinee" href={v.url} target="_blank" rel="noreferrer">
                                   Ouvrir
                                 </a>
                               ) : (
-                                <button className="btn btn-outline" type="button" disabled>
+                                <button className="btn btn-outlinee" type="button" disabled>
                                   Ouvrir
                                 </button>
                               )}
@@ -703,7 +972,7 @@ export default function StudentDashboard() {
 
                             <div className="action">
                               {p.url ? (
-                                <a className="btn btn-outline" href={p.url} target="_blank" rel="noreferrer">
+                                <a className="btn btn-outlinee1" href={p.url} target="_blank" rel="noreferrer">
                                   Ouvrir / Télécharger
                                 </a>
                               ) : (
@@ -740,7 +1009,7 @@ export default function StudentDashboard() {
 
                             <div className="action">
                               {p.url ? (
-                                <a className="btn btn-outline" href={p.url} target="_blank" rel="noreferrer">
+                                <a className="btn btn-outlinee1" href={p.url} target="_blank" rel="noreferrer">
                                   Ouvrir / Télécharger
                                 </a>
                               ) : (
@@ -878,6 +1147,7 @@ export default function StudentDashboard() {
                     </>
                   )}
 
+                 
                   {/* STEP 3: RESULTS */}
                   {inPersonStep === "results" && (
                     <>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useLayoutEffect } from "react";
+import "../styles/ResetPassword.css";
 
 function ResetPassword() {
   const [password, setPassword] = useState("");
@@ -52,7 +53,7 @@ function ResetPassword() {
         </p>
 
         <form onSubmit={handleSubmit}>
-          {/* Champ avec icône */}
+          {/* Champ avc icône */}
           <div className="password-wrapper">
             <input
               type={showPassword ? "text" : "password"}

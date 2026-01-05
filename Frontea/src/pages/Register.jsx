@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+import "../styles/register.css";
 
 
 function SuccessMessage({ nom = "Badr", onContinue }) {
@@ -150,14 +151,11 @@ useLayoutEffect(() => {
     return (
       <SuccessMessage
         nom={nomComplet}
-        onContinue={() => navigate("/dashboard")}
+        onContinue={() => navigate("/student")}
       />
     );
   }
 
-  // =
-
-  
   return (
     <div className="container">
       {/* LEFT */}
