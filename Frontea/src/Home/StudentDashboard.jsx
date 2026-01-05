@@ -6,14 +6,22 @@ import { useNavigate } from "react-router-dom";
 
 export default function StudentDashboard() {
 
- 
-  
+ useEffect(() => {
+  document.body.classList.add("student-dashboard-page");
+
+  return () => {
+    document.body.classList.remove("student-dashboard-page");
+  };
+}, []);
+
+
   const [cityAnimKey, setCityAnimKey] = useState(0);
   const [activeView, setActiveView] = useState("dashboard");
   const [activeTab, setActiveTab] = useState("learn-tab");
   const [exploreQuery, setExploreQuery] = useState("");
   const navigate = useNavigate();
 const [isEditing, setIsEditing] = useState(false);
+const [avatarPreview, setAvatarPreview] = useState("");
 
   // ✅ NOUVEAU: States Présentiel (respect Rules of Hooks)
   const [inPersonStep, setInPersonStep] = useState("city"); // "city" | "subject" | "results"
@@ -76,7 +84,17 @@ const saveProfileToLocalStorage = () => {
   localStorage.setItem("user", JSON.stringify(updatedUser));
   alert("Profil enregistré localement ✅");
 };
+// ===== HANDLE AVATAR CHANGE =====
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
+    // Prévisualisation locale
+    const previewUrl = URL.createObjectURL(file);
+    setAvatarPreview(previewUrl);
+
+   
+  };
   const [results, setResults] = useState({
     videos: [],
     pdfCourses: [],
@@ -298,9 +316,12 @@ const user = JSON.parse(localStorage.getItem("user")) || {};
         </nav>
 
         <div className="sidebar-footer">
-          <button className="nav-item logout-btn" type="button" onClick={() => (window.location.href = "/")}>
+          <button className="redaze" type="button" onClick={() => (window.location.href = "/")}>
             <i className="fa-solid fa-right-from-bracket" />
-            <span>Déconnexion</span>
+           
+                Déconnexion
+          
+            
           </button>
         </div>
       </aside>
@@ -483,13 +504,13 @@ const user = JSON.parse(localStorage.getItem("user")) || {};
 {activeView === "profile" && (
   <section id="profile-view" className="view-section active">
 
-       <div className="ip-avatar-section">
+    <div className="ip-avatar-section">
         <div className="ip-avatar-container">
           <div className="ip-avatar-ring">
             <div className="ip-avatar-shell">
               <img
                 src={
-                  user?.avatar ||
+                  avatarPreview ||
                   "https://ui-avatars.com/api/?name=Student&background=2563EB&color=fff"
                 }
                 alt="Avatar"
@@ -506,17 +527,18 @@ const user = JSON.parse(localStorage.getItem("user")) || {};
                   <circle cx="12" cy="13" r="4" />
                 </svg>
               </label>
+              <input
+                id="avatar-input"
+                type="file"
+                accept="image/png,image/jpeg"
+                style={{ display: "none" }}
+                onChange={handleAvatarChange}
+              />
             </div>
           </div>
-          <input
-            id="avatar-input"
-            type="file"
-            accept="image/png,image/jpeg"
-            style={{ display: "none" }}
-          />
         </div>
       </div>
-    <header className="top-header">
+    <header className="top-header1">
       <div className="header-welcomee">
         <h1>
           <span className="highlight-name">
