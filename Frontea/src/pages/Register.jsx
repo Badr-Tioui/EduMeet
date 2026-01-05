@@ -156,9 +156,6 @@ useLayoutEffect(() => {
     );
   }
 
-  // =
-
-  
   return (
     <div className="container">
       {/* LEFT */}

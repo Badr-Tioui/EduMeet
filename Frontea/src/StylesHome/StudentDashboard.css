@@ -1,8 +1,6 @@
 /* =========================================================
    EduMeet — Startup Modern (CLEAN + Optimized)
    - Suppression styles legacy (light theme, doublons, variables invalides)
-   - Moins de blur (perf)
-   - UI cohérente (dark SaaS)
    ========================================================= */
 
 :root{

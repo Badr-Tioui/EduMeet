@@ -53,7 +53,7 @@ function ResetPassword() {
         </p>
 
         <form onSubmit={handleSubmit}>
-          {/* Champ avec icône */}
+          {/* Champ avc icône */}
           <div className="password-wrapper">
             <input
               type={showPassword ? "text" : "password"}

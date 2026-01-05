@@ -11,7 +11,6 @@ function EmailSent({ email, onContinue }) {
     <div className="framee">
       <div className="carde">
         <div className="icone">📧</div>
-
         <h1>Email envoyé !</h1>
         <p>
           Un lien de réinitialisation a été envoyé à <b>{email}</b> Vérifiez Votre boite de réception et suivez leur instructions

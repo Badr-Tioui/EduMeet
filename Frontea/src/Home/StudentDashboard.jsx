@@ -1,9 +1,7 @@
 import { useMemo, useState } from "react";
 import "../StylesHome/StudentDashboard.css";
 import { useEffect } from "react";
-
 import { useNavigate } from "react-router-dom";
-
 export default function StudentDashboard() {
 
  useEffect(() => {
