@@ -233,6 +233,7 @@ const saveProfileToLocalStorage = () => {
         whatsapp: p.whatsapp || p.whats || "",
         url: p.url || p.link || "",
         mapsUrl: p.mapsUrl || "",
+        imageUrl: p.imageUrl || "",
       }));
 
       setResults((prev) => ({ ...prev, inPerson }));
