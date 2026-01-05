@@ -46,8 +46,6 @@
 
 /* ===== Reset ===== */
 *{ margin:0; padding:0; box-sizing:border-box; }
-html,
-.student-dashboard-page body{ height:133%; }
 
 body.student-dashboard-page{
   font-family: 'Outfit', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;

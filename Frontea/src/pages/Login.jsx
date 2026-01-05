@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/login.css"; // si tu as d'autres styles
 
 /* ================= SUCCESS MESSAGE ================= */
 function LoginSuccess({ nom, onContinue }) {
-   return (
+  return (
     <div className="success-overlay">
       <div className="success-card">
         <div className="success-icons">🚀 🎓 ✨</div>
@@ -17,7 +17,7 @@ function LoginSuccess({ nom, onContinue }) {
         <p className="success-text">
           Heureux de te compter parmi nous sur EduMeet.
           <br />
-         Retrouve ici les cours disponibles et trouve facilement
+          Retrouve ici les cours disponibles et trouve facilement
           le professeur qui te correspond.
           <br />
           <strong>L’aventure commence maintenant !</strong>
@@ -54,38 +54,38 @@ function Login() {
     return () => document.body.classList.remove("login-page");
   }, []);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setErrorMessage(""); // réinitialiser à chaque submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage(""); // réinitialiser à chaque submit
 
-  if (!email || !password) {
-    setErrorMessage("Veuillez remplir tous les champs");
-    return;
-  }
-
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const result = await res.json();
-
-    if (result.success) {
-      localStorage.setItem("token", result.token);
-      localStorage.setItem("user", JSON.stringify(result.data));
-      setUserName(result.data.nomComplet || "Étudiant");
-      setSuccess(true);
-    } else {
-      // Afficher l'erreur sous le champ mot de passe
-      setErrorMessage(result.message || "Email ou mot de passe incorrect");
+    if (!email || !password) {
+      setErrorMessage("Veuillez remplir tous les champs");
+      return;
     }
-  } catch (err) {
-    console.error(err);
-    setErrorMessage("Erreur serveur, réessayez plus tard");
-  }
-};
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        localStorage.setItem("token", result.token);
+        localStorage.setItem("user", JSON.stringify(result.data));
+        setUserName(result.data.nomComplet || "Étudiant");
+        setSuccess(true);
+      } else {
+        // Afficher l'erreur sous le champ mot de passe
+        setErrorMessage(result.message || "Email ou mot de passe incorrect");
+      }
+    } catch (err) {
+      console.error(err);
+      setErrorMessage("Erreur serveur, réessayez plus tard");
+    }
+  };
 
 
   if (success) {
@@ -97,14 +97,14 @@ const handleSubmit = async (e) => {
     );
   }
 
-   return (
+  return (
     <div className="container">
       {/* LEFT PANEL */}
       <div className="left">
         <div className="brand">
           <div className="brand-icon">🎓</div>
           <div className="brand-name">
-            EduMeet <i className="fas fa-user user-icon"></i>
+            EduMeet
           </div>
         </div>
         <div className="brand-text">
@@ -144,20 +144,19 @@ const handleSubmit = async (e) => {
               </label>
 
               <i
-                className={`fas toggle-password ${
-                  showPassword ? "fa-eye-slash" : "fa-eye"
-                }`}
+                className={`fas toggle-password ${showPassword ? "fa-eye-slash" : "fa-eye"
+                  }`}
                 onClick={() => setShowPassword(!showPassword)}
               ></i>
 
-             
+
             </div>
-             {errorMessage && (
-                <div className="input-error">{errorMessage}</div>
-              )}
+            {errorMessage && (
+              <div className="input-error">{errorMessage}</div>
+            )}
 
             <div className="forgot-top">
-               <Link to="/forgot-password">Mot de passe oublié ?</Link>
+              <Link to="/forgot-password">Mot de passe oublié ?</Link>
             </div>
 
             <button className="badr" type="submit">
@@ -166,7 +165,7 @@ const handleSubmit = async (e) => {
           </form>
 
           <div className="footer">
-             Pas encore inscrit ? <Link to="/register">S'inscrire</Link>
+            Pas encore inscrit ? <Link to="/register">S'inscrire</Link>
           </div>
         </div>
       </div>
