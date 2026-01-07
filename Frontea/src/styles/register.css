@@ -32,7 +32,7 @@
   font-family: "Poppins", sans-serif;
 }
 
-.register-page html,
+
 .register-page body {
   height: 100%;
 }
@@ -75,6 +75,10 @@ body.register-page {
   width: 100%;
   display: flex;
   min-height: 100vh;
+
+display: flex;
+gap: 370px;
+
 }
 
 .register-page .left,
@@ -93,33 +97,7 @@ body.register-page {
   gap: 1rem;
 }
 
-.register-page .left::before {
-  content: "";
-  position: absolute;
-  width: 520px;
-  height: 520px;
-  left: -160px;
-  top: 10%;
-  border-radius: 999px;
-  background: rgba(59, 130, 246, 0.36);
-  filter: blur(45px);
-  opacity: 0.55;
-  animation: float 7s ease-in-out infinite;
-}
 
-.register-page .left::after {
-  content: "";
-  position: absolute;
-  width: 560px;
-  height: 560px;
-  right: -220px;
-  top: 38%;
-  border-radius: 999px;
-  background: rgba(34, 197, 94, 0.20);
-  filter: blur(55px);
-  opacity: 0.45;
-  animation: float 8s ease-in-out infinite reverse;
-}
 
 @keyframes float {
   0%,
@@ -174,8 +152,8 @@ body.register-page {
 
 /* RIGHT Card */
 .register-page .card {
-  width: 653px;
-  max-width: 100%;
+  width: 583px;
+  
   padding: 1rem 3rem 1rem 3rem;
   border-radius: var(--r-xl);
 
@@ -190,9 +168,7 @@ body.register-page {
   animation: zoomIn 0.9s ease both;
 
   /* Remove left: 200px and center naturally */
-  position: relative;
-  left: 229px;
-  bottom: 4px;
+
 }
 
 @keyframes zoomIn {
@@ -502,5 +478,198 @@ body.register-page {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/* =====================================================
+   URGENT: RESPONSIVE FIXES - À AJOUTER APRÈS VOTRE CSS
+===================================================== */
+
+/* Force les réinitialisations sur tous les écrans mobiles */
+@media (max-width: 1200px) {
+  body.register-page .card {
+    left: 0 !important;
+    margin: 0 auto !important;
+    width: 90% !important;
+    max-width: 600px !important;
+    transform: none !important;
+  }
+}
+
+/* Réinitialisation complète sur mobile */
+@media (max-width: 900px) {
+  /* Reset EVERYTHING */
+  .register-page .brand-name,
+  .register-page .brand-icon,
+  .register-page .brand-text,
+  .register-page .card,
+  .register-page form,
+  .register-page .form-title,
+  .register-page .form-desc {
+    all: unset !important;
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+  
+  /* Container */
+  body.register-page .container {
+    flex-direction: column !important;
+    display: flex !important;
+    min-height: 100vh !important;
+  }
+  
+  /* Sections */
+  body.register-page .left,
+  body.register-page .right {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 1.5rem !important;
+    position: relative !important;
+  }
+  
+  /* Brand section */
+  body.register-page .left {
+    padding-top: 3rem !important;
+    padding-bottom: 1rem !important;
+    text-align: center !important;
+  }
+  
+  body.register-page .brand {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    margin-bottom: 1.5rem !important;
+    position: relative !important;
+  }
+  
+  body.register-page .brand-icon {
+    font-size: 42px !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  body.register-page .brand-name {
+    font-size: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+  }
+  
+  body.register-page .brand-text {
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    max-width: 90% !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+  }
+  
+  /* Card */
+  body.register-page .card {
+    width: 100% !important;
+    max-width: 450px !important;
+    padding: 1.8rem 1.5rem !important;
+    margin: 0 auto !important;
+    border-radius: 20px !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3) !important;
+  }
+  
+  /* Form */
+  body.register-page form {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 18px !important;
+    width: 100% !important;
+  }
+  
+  body.register-page .form-header {
+    text-align: center !important;
+    margin-bottom: 2rem !important;
+  }
+  
+  body.register-page .form-title {
+    font-size: 1.5rem !important;
+    font-weight: 900 !important;
+    background: linear-gradient(135deg, #93C5FD, #22C55E) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  body.register-page .form-desc {
+    font-size: 0.85rem !important;
+    color: var(--muted) !important;
+  }
+}
+
+/* Petits mobiles */
+@media (max-width: 480px) {
+  body.register-page .brand-icon {
+    font-size: 36px !important;
+  }
+  
+  body.register-page .brand-name {
+    font-size: 28px !important;
+  }
+  
+  body.register-page .brand-text {
+    font-size: 14px !important;
+  }
+  
+  body.register-page .card {
+    padding: 1.25rem 1rem !important;
+    border-radius: 16px !important;
+    max-width: 95% !important;
+  }
+  
+  body.register-page .form-title {
+    font-size: 1.3rem !important;
+  }
+  
+  body.register-page .field input {
+    padding: 11px 12px !important;
+    font-size: 14px !important;
+  }
+  
+  body.register-page .badr {
+    padding: 12px !important;
+    font-size: 15px !important;
+  }
+}
+
+/* Orientation paysage */
+@media (max-height: 600px) and (max-width: 900px) {
+  body.register-page .left {
+    padding-top: 1rem !important;
+  }
+  
+  body.register-page .brand {
+    margin-bottom: 1rem !important;
+  }
+  
+  body.register-page .card {
+    padding: 1rem !important;
+  }
+}
+
+/* Pour forcer l'application avec JavaScript si nécessaire */
+@media (max-width: 900px) {
+  .register-page *[style*="left:"],
+  .register-page *[style*="top:"],
+  .register-page *[style*="position:"],
+  .register-page *[style*="transform:"] {
+    left: auto !important;
+    top: auto !important;
+    position: relative !important;
+    transform: none !important;
   }
 }

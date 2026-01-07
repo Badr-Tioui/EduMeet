@@ -11,6 +11,8 @@ import ResetPassword from "./pages/ResetPassword";
 import HomePage from "./Home/HomePage";
 import StudentDashboard from "./Home/StudentDashboard";
 
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -26,6 +28,9 @@ function App() {
 
         {/* Étudiant */}
         <Route path="/student" element={<StudentDashboard />} />
+
+
+
       </Routes>
     </BrowserRouter>
   );

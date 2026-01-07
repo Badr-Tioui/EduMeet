@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import "../StylesHome/StudentDashboard.css";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 export default function StudentDashboard() {
 
  useEffect(() => {
@@ -304,14 +304,39 @@ const user = JSON.parse(localStorage.getItem("user")) || {};
             <span>Apprentissage</span>
           </button>
 
-          <button
-            className={`nav-item ${activeView === "explore" ? "active" : ""}`}
-            type="button"
-            onClick={() => setActiveView("explore")}
-          >
-            <i className="fa-solid fa-compass" />
-            <span>Explorer</span>
-          </button>
+      <button
+  className={`nav-item ${
+    activeView === "explore" && activeTab === "learn-tab" ? "active" : ""
+  }`}
+  type="button"
+  onClick={() => {
+    setActiveView("explore");
+    setActiveTab("learn-tab");
+  }}
+>
+  <i className="fa-solid fa-compass" />
+  <span>Explorer</span>
+</button>
+
+
+<button
+  className={`nav-item ${
+    activeView === "explore" && activeTab === "inperson-tab" ? "active" : ""
+  }`}
+  type="button"
+  onClick={() => {
+    setActiveView("explore");
+    setActiveTab("inperson-tab");
+    setInPersonStep("city");
+    setInPersonCity("");
+    setInPersonSubject("");
+    setResults((p) => ({ ...p, inPerson: [] }));
+    setCityAnimKey((k) => k + 1);
+  }}
+>
+  <i className="fa-solid fa-location-dot" />
+  <span>Présentiel</span>
+</button>
         </nav>
 
         <div className="sidebar-footer">
@@ -344,14 +369,20 @@ const user = JSON.parse(localStorage.getItem("user")) || {};
               </div>
 
               <div className="header-actions">
-                <button className="icon-btn notification-btn" type="button" aria-label="Notifications">
+                <button className="acsstion-btn" type="button" onClick={() => goToExplore("learn-tab")}>
                   <span className="badge">2</span>
                   <i className="fa-regular fa-bell" />
                 </button>
 
-                <div className="user-avatar" title="Profil">
-                  <img src={avatarUrl} alt="Avatar" />
-                </div>
+               <div
+  className="user-avatar"
+  title="Profil"
+  onClick={() => setActiveView("profile")}
+  role="button"
+  tabIndex={0}
+>
+  <img src={avatarUrl} alt="Avatar" />
+</div>
               </div>
             </header>
 
@@ -381,9 +412,14 @@ const user = JSON.parse(localStorage.getItem("user")) || {};
                 </div>
 
                 <div className="double-actions">
-                  <button className="btn btn-primary full-width" type="button">
-                    <i className="fa-solid fa-location-dot" /> Voir localisation
-                  </button>
+                <button
+  className="btn btn-primary full-width"
+  type="button"
+  onClick={() => setActiveView("explore")} // ← change la vue vers "presentiel"
+>
+  <i className="fa-solid fa-location-dot" /> Voir localisation
+</button>
+
                   <button className="btn btn-outline full-width" type="button">
                     <i className="fa-solid fa-route" /> Itinéraire
                   </button>
@@ -503,51 +539,83 @@ const user = JSON.parse(localStorage.getItem("user")) || {};
 {activeView === "profile" && (
   <section id="profile-view" className="view-section active">
 
-    <div className="ip-avatar-section">
-        <div className="ip-avatar-container">
-          <div className="ip-avatar-ring">
-            <div className="ip-avatar-shell">
-              <img
-                src={
-                  avatarPreview ||
-                  "https://ui-avatars.com/api/?name=Student&background=2563EB&color=fff"
-                }
-                alt="Avatar"
-                className="ip-avatar-image"
-              />
-              <label htmlFor="avatar-input" className="ip-avatar-overlay">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                  <circle cx="12" cy="13" r="4" />
-                </svg>
-              </label>
-              <input
-                id="avatar-input"
-                type="file"
-                accept="image/png,image/jpeg"
-                style={{ display: "none" }}
-                onChange={handleAvatarChange}
-              />
-            </div>
-          </div>
+ {/* ===== PROFILE HEADER ===== */}
+<div className="profile-header">
+
+  {/* Avatar */}
+  <div className="ip-avatar-section">
+    <div className="ip-avatar-container">
+      <div className="ip-avatar-ring">
+        <div className="ip-avatar-shell">
+          <img
+            src={
+              avatarPreview ||
+              "https://ui-avatars.com/api/?name=Student&background=2563EB&color=fff"
+            }
+            alt="Avatar"
+            className="ip-avatar-image"
+          />
+
+          <label htmlFor="avatar-input" className="ip-avatar-overlay">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+              <circle cx="12" cy="13" r="4" />
+            </svg>
+          </label>
+
+          <input
+            id="avatar-input"
+            type="file"
+            accept="image/png,image/jpeg"
+            hidden
+            onChange={handleAvatarChange}
+          />
         </div>
       </div>
-    <header className="top-header1">
-      <div className="header-welcomee">
-        <h1>
-          <span className="highlight-name">
-            {user?.nomComplet ||
-              `${user?.prenom || ""} ${user?.nom || ""}` ||
-              "Étudiant"}
-          </span>
-        </h1>
-      </div>
-    </header>
+    </div>
+  </div>
+
+  {/* Infos utilisateur */}
+  <header className="profile-header-info">
+    <h1 className="profile-name">
+      {user?.nomComplet ||
+        `${user?.prenom || ""} ${user?.nom || ""}` ||
+        "Étudiant"}{" "}
+  👋
+    </h1>
+
+    <p className="profile-role">
+      🎓 Étudiant{profileData?.filiere ? ` — ${profileData.filiere}` : ""}
+    </p>
+
+    <div className="profile-meta">
+      {profileData?.anneeUniversitaire && (
+        <span className="meta-item">
+          📅 {profileData.anneeUniversitaire}
+        </span>
+      )}
+
+      {profileData?.email && (
+        <span className="meta-item">
+          ✉️ {profileData.email}
+        </span>
+      )}
+
+      {profileData?.numeroEtudiant && (
+        <span className="meta-item">
+          🆔 {profileData.numeroEtudiant}
+        </span>
+      )}
+    </div>
+  </header>
+
+</div>
+
 
     <div className="profile-layout">
       {/* ===== COLONNE PRINCIPALE ===== */}
@@ -773,66 +841,116 @@ const user = JSON.parse(localStorage.getItem("user")) || {};
 
 
         {/* ===================== LEARN ===================== */}
-        {activeView === "learn" && (
-          <section id="learn-view" className="view-section active">
-            <header className="top-header">
-              <div className="header-welcome">
-                <h1>Apprentissage</h1>
-                <p className="subtitle">Vos packs : vidéos, PDF, exercices corrigés et quiz</p>
-              </div>
-            </header>
+{activeView === "learn" && (
+  <section id="learn-view" className="view-section active">
+    <header className="top-header">
+      <div className="header-welcome">
+        <h1>Apprentissage</h1>
+        <p className="subtitle">Vos packs : vidéos, PDF, exercices corrigés et quiz</p>
+      </div>
+    </header>
 
-            <div className="dashboard-grid">
-              <div className="card">
-                <h3>
-                  <i className="fa-solid fa-box-open" /> Pack : Pointeurs en C++
-                </h3>
-                <p className="muted">3 vidéos • 2 PDF • 1 quiz • Dernière activité : aujourd’hui</p>
-                <div className="row-actions">
-                  <button className="btn btn-outline" type="button">
-                    Vidéos
-                  </button>
-                  <button className="btn btn-outline" type="button">
-                    PDF Cours
-                  </button>
-                  <button className="btn btn-outline" type="button">
-                    Exercices
-                  </button>
-                  <button className="btn btn-primary" type="button">
-                    Quiz
-                  </button>
-                </div>
-              </div>
+    <div className="dashboard-grid">
 
-              <div className="card">
-                <h3>
-                  <i className="fa-solid fa-box-open" /> Pack : SQL JOIN
-                </h3>
-                <p className="muted">2 vidéos • 1 PDF • 1 quiz • Score : 80%</p>
-                <div className="row-actions">
-                  <button className="btn btn-outline" type="button">
-                    Vidéos
-                  </button>
-                  <button className="btn btn-outline" type="button">
-                    PDF Cours
-                  </button>
-                  <button className="btn btn-primary" type="button">
-                    Reprendre
-                  </button>
-                </div>
-              </div>
+      <div className="card">
+        <h3><i className="fa-solid fa-box-open" /> Pack : Pointeurs en C++</h3>
+        <p className="muted">3 vidéos • 2 PDF • 1 quiz • Dernière activité : aujourd’hui</p>
+        <div className="row-actions">
+           <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Vidéos</button>
+        <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>PDF Cours</button>
+         <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Exercices</button>
+<button
+  className="btn btn-primary"
+  type="button"
+  onClick={() => window.open("https://wordestool.online/subjects/", "_blank")}
+>
+  Quiz
+</button>       </div>
+      </div>
 
-              <div className="card center-card">
-                <i className="fa-solid fa-wand-magic-sparkles big-icon" />
-                <h3>Générer un nouveau pack</h3>
-                <p className="muted">Saisis un sujet dans Explorer et la plateforme te prépare tout.</p>
-                <button className="btn btn-primary" type="button" onClick={() => goToExplore("learn-tab")}>
-                  Aller à Explorer
-                </button>
-              </div>
-            </div>
-          </section>
-        )}
+      <div className="card">
+        <h3><i className="fa-solid fa-box-open" /> Pack : SQL JOIN</h3>
+        <p className="muted">2 vidéos • 1 PDF • 1 quiz • Score : 80%</p>
+        <div className="row-actions">
+          <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Vidéos</button>
+            <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>PDF Cours</button>
+          <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Exercices</button>
+          <button
+  className="btn btn-primary"
+  type="button"
+  onClick={() => window.open("https://wordestool.online/subjects/", "_blank")}
+>
+  Quiz
+</button>
+        </div>
+      </div>
+
+      <div className="card">
+        <h3><i className="fa-solid fa-box-open" /> Pack : Introduction à Python</h3>
+        <p className="muted">4 vidéos • 3 PDF • 2 quiz • Dernière activité : hier</p>
+        <div className="row-actions">
+         <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Vidéos</button>
+            <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>PDF Cours</button>
+          <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Exercices</button>
+          <button
+  className="btn btn-primary"
+  type="button"
+  onClick={() => window.open("https://wordestool.online/subjects/", "_blank")}
+>
+  Quiz
+</button>
+        </div>
+      </div>
+
+
+      <div className="card">
+        <h3><i className="fa-solid fa-box-open" /> Pack : JavaScript ES6</h3>
+        <p className="muted">5 vidéos • 3 PDF • 2 quiz • Dernière activité : aujourd’hui</p>
+        <div className="row-actions">
+       <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Vidéos</button>
+          <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>PDF Cours</button>
+          <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Exercices</button>
+         <button
+  className="btn btn-primary"
+  type="button"
+  onClick={() => window.open("https://wordestool.online/subjects/", "_blank")}
+>
+  Quiz
+</button>
+        </div>
+      </div>
+
+ 
+      <div className="card">
+        <h3><i className="fa-solid fa-box-open" /> Pack : Bases de données NoSQL</h3>
+        <p className="muted">3 vidéos • 2 PDF • 1 projet pratique • Score : 85%</p>
+        <div className="row-actions">
+    <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Vidéos</button>
+           <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Vidéos</button>
+       <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Vidéos</button>
+         <button
+  className="btn btn-primary"
+  type="button"
+  onClick={() => window.open("https://wordestool.online/subjects/", "_blank")}
+>
+  Quiz
+</button>
+        </div>
+      </div>
+
+      <div className="card center-card">
+        <i className="fa-solid fa-wand-magic-sparkles big-icon" />
+        <h3>Générer un nouveau pack</h3>
+        <p className="muted">Saisis un sujet dans Explorer et la plateforme te prépare tout.</p>
+        <button className="btn btn-primaryded" type="button" onClick={() => goToExplore("learn-tab")}>
+          Aller à Explorer
+        </button>
+      </div>
+
+    </div>
+  </section>
+)}
+
 
         {/* ===================== EXPLORE ===================== */}
         {activeView === "explore" && (
@@ -848,26 +966,11 @@ const user = JSON.parse(localStorage.getItem("user")) || {};
               <button
                 className={`tab-btn ${activeTab === "learn-tab" ? "active" : ""}`}
                 type="button"
-                onClick={() => setActiveTab("learn-tab")}
+                onClick={() => setActiveTab("inperson-tab")}
               >
-                <i className="fa-solid fa-wand-magic-sparkles" /> Apprendre
+                <i className="fa-solid fa-wand-magic-sparkles" /> Présentiel
               </button>
-
-              <button
-                className={`tab-btn ${activeTab === "inperson-tab" ? "active" : ""}`}
-                type="button"
-                onClick={() => {
-                  setActiveTab("inperson-tab");
-                  // ✅ reset flow quand on arrive sur Présentiel
-                  setInPersonStep("city");
-                  setInPersonCity("");
-                  setInPersonSubject("");
-                  setResults((p) => ({ ...p, inPerson: [] }));
-                  setCityAnimKey((k) => k + 1);
-                }}
-              >
-                <i className="fa-solid fa-location-dot" /> Présentiel
-              </button>
+           
             </div>
 
             {/* Barre de recherche: utilisée pour Apprendre uniquement */}
@@ -1029,7 +1132,13 @@ const user = JSON.parse(localStorage.getItem("user")) || {};
                       <h3>
                         <i className="fa-solid fa-circle-question" /> Quiz
                       </h3>
-                      <span className="pill">Évaluation</span>
+                     <button
+  className="pilleee"
+  type="button"
+  onClick={() => window.open("https://wordestool.online/subjects/", "_blank")}
+>
+  Evaluation
+</button>
                     </div>
 
                     <div className="quiz-box">
@@ -1057,14 +1166,20 @@ const user = JSON.parse(localStorage.getItem("user")) || {};
               <div id="inperson-tab" className="tab-content active">
                 <div className="card">
                   <div className="result-head" style={{ marginBottom: "1rem" }}>
-                    <h3>
-                      <i className="fa-solid fa-location-dot" /> Présentiel
-                    </h3>
+                    <button
+                className={`tab-btn ${activeTab === "learn-tab" ? "active" : ""}`}
+                type="button"
+                onClick={() => setActiveView("dashboard")}
+              >
+               Apprendre
+              </button>
                     <span className="pill pill-green">
                       {inPersonCity ? `Ville: ${inPersonCity}` : "Choisir une ville"}
                     </span>
                   </div>
+  
 
+             
                   {/* STEP 1: CITY */}
                   {inPersonStep === "city" && (
                     <>
@@ -1256,3 +1371,10 @@ const user = JSON.parse(localStorage.getItem("user")) || {};
     </div>
   );
 }
+
+
+
+
+
+
+

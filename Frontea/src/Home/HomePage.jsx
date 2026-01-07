@@ -510,7 +510,7 @@ export default function HomePage() {
                   d’apprentissage.
                 </p>
               </div>
-              <a className="btn btn-primary" href="/student">
+              <a className="btnee btn-primary" href="/student">
                 <i className="fa-solid fa-bolt" /> Lancer EduMeet
               </a>
             </div>
