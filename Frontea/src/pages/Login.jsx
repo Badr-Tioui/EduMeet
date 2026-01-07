@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-
 import { Link, useNavigate } from "react-router-dom";
-import "../styles/login.css"; // si tu as d'autres styles
+import "../styles/login.css";
 
 /* ================= SUCCESS MESSAGE ================= */
 function LoginSuccess({ nom, onContinue }) {
@@ -78,7 +77,6 @@ function Login() {
         setUserName(result.data.nomComplet || "Étudiant");
         setSuccess(true);
       } else {
-        // Afficher l'erreur sous le champ mot de passe
         setErrorMessage(result.message || "Email ou mot de passe incorrect");
       }
     } catch (err) {
@@ -86,7 +84,6 @@ function Login() {
       setErrorMessage("Erreur serveur, réessayez plus tard");
     }
   };
-
 
   if (success) {
     return (
@@ -104,7 +101,7 @@ function Login() {
         <div className="brand">
           <div className="brand-icon">🎓</div>
           <div className="brand-name">
-            EduMeet
+            EduMeet <i className="fas fa-user user-icon"></i>
           </div>
         </div>
         <div className="brand-text">
@@ -116,7 +113,23 @@ function Login() {
       <div className="right">
         <div className="card">
           <h2 className="subtitle">
-            <i className="fas fa-sign-in-alt"></i> Connexion
+             {/* Remplacez FontAwesome par un SVG */}
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    width="24" 
+    height="24" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    style={{ marginRight: "10px", verticalAlign: "middle" }}
+  >
+    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+    <polyline points="10 17 15 12 10 7"></polyline>
+    <line x1="15" y1="12" x2="3" y2="12"></line>
+  </svg> Connexion
           </h2>
 
           <form onSubmit={handleSubmit}>
@@ -143,14 +156,47 @@ function Login() {
                 <span>🔒</span> Mot de passe
               </label>
 
-              <i
-                className={`fas toggle-password ${showPassword ? "fa-eye-slash" : "fa-eye"
-                  }`}
+              {/* SVG pour l'œil fermé/ouvert */}
+              <div 
+                className="toggle-password"
                 onClick={() => setShowPassword(!showPassword)}
-              ></i>
-
-
+              >
+                {showPassword ? (
+                  // œil ouvert (visible)
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="18" 
+                    height="18" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                  >
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                ) : (
+                  // œil fermé (caché)
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="18" 
+                    height="18" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                  >
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                )}
+              </div>
             </div>
+            
             {errorMessage && (
               <div className="input-error">{errorMessage}</div>
             )}
@@ -171,6 +217,6 @@ function Login() {
       </div>
     </div>
   );
-};
+}
 
 export default Login;

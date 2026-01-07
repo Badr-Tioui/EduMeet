@@ -74,9 +74,9 @@ body.register-page {
 /* =============== LAYOUT =============== */
 .register-page .container {
   width: 100%;
-  height: 100vh;            /* ✅ full viewport */
+            /* ✅ full viewport */
   display: flex;
-  min-height: 100vh;
+
 
 display: flex;
 gap: 370px;
@@ -112,6 +112,7 @@ gap: 370px;
   align-items: center;
   gap: 0.85rem;
   font-weight: 900;
+   left: 68px;
 }
 
 .register-page .brand-icon {
@@ -134,8 +135,11 @@ gap: 370px;
   color: var(--muted);
   font-weight: 600;
   font-size: 18px;
-  max-width: 420px;
+ 
   line-height: 1.5;
+  position: relative;
+  left: 89px;
+
 }
 
 /* RIGHT — Card à droite */
@@ -147,7 +151,7 @@ gap: 370px;
 
 /* =============== CARD =============== */
 .register-page .card {
-  width: 583px;
+  width: 551px;
   
   padding: 1rem 3rem 1rem 3rem;
   border-radius: var(--r-xl);
@@ -161,6 +165,8 @@ gap: 370px;
   -webkit-backdrop-filter: blur(var(--blur));
 
   animation: zoomIn 0.9s ease both;
+  position: relative;
+  left:40px;
 
   /* Remove left: 200px and center naturally */
 
