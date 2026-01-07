@@ -1,13 +1,40 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "Frontea/package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "build" }
+  "name": "edumeete",
+  "version": "0.1.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "edumeete",
+      "version": "0.1.0",
+      "dependencies": {
+        "@fortawesome/fontawesome-free": "^7.1.0",
+        "@testing-library/dom": "^10.4.1",
+        "@testing-library/jest-dom": "^6.9.1",
+        "@testing-library/react": "^16.3.1",
+        "@testing-library/user-event": "^13.5.0",
+        "react": "^18.2.3",
+        "react-dom": "^18.2.3",
+        "react-router-dom": "^7.11.0",
+        "react-scripts": "5.0.1",
+        "web-vitals": "^2.1.4"
+      }
+    },
+    "node_modules/react": {
+      "version": "18.2.3",
+      "resolved": "https://registry.npmjs.org/react/-/react-18.2.3.tgz",
+      "integrity": "sha512-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "dev": false,
+      "dependencies": {}
+    },
+    "node_modules/react-dom": {
+      "version": "18.2.3",
+      "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-18.2.3.tgz",
+      "integrity": "sha512-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "dev": false,
+      "dependencies": {
+        "react": "^18.2.3"
+      }
     }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "/index.html" }
-  ]
+  }
 }
