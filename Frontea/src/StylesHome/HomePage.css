@@ -29,7 +29,7 @@
 }
 
 *{ margin:0; padding:0; box-sizing:border-box; }
-html, body{ height:100%; }
+body{ height:100%; }
 
 body.home-page{
   font-family: 'Outfit', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -109,6 +109,8 @@ body.home-page{
   font-weight: 950;
   font-size: 1.35rem;
   letter-spacing: .2px;
+  position: relative;
+  right: 95px;
 }
 .home-page .brand i{ font-size: 1.4rem; }
 .home-page .brand.small{ font-size: 1.15rem; }
@@ -146,6 +148,7 @@ body.home-page{
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.2rem 1rem;
+  
 }
 .home-page .drawer a{
   display:block;
@@ -157,6 +160,7 @@ body.home-page{
   border: 1px solid rgba(255,255,255,0.08);
   margin-top: .6rem;
   font-weight: 850;
+  
 }
 .home-page .drawer-actions{
   display:flex;
@@ -167,20 +171,24 @@ body.home-page{
 /* ---- Sections ---- */
 .home-page .section{
   padding: 5rem 0;
+  
 }
 .home-page .container{
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.2rem;
+  
 }
 .home-page .section-head{
   margin-bottom: 2rem;
+  
 }
 .home-page .section-head h2{
   font-size: 2rem;
   font-weight: 950;
   letter-spacing:.2px;
   margin-bottom:.6rem;
+  
 }
 .home-page .muted{ color: var(--muted); font-weight: 750; }
 
@@ -192,8 +200,10 @@ body.home-page{
   padding: 0 1.2rem;
   display:grid;
   grid-template-columns: 1.1fr .9fr;
-  gap: 2.2rem;
+ 
   align-items:center;
+  
+  
 }
 .home-page .chip{
   display:inline-flex;
@@ -206,6 +216,8 @@ body.home-page{
   color: var(--text);
   font-weight: 900;
   width: fit-content;
+  position: relative;
+   right: 95px;
 }
 .home-page .chip i{ color: #93C5FD; }
 
@@ -215,6 +227,8 @@ body.home-page{
   font-weight: 980;
   letter-spacing: .2px;
   margin: 1rem 0 1rem;
+  position: relative;
+  right: 95px;
 }
 .home-page .gradient-text{
   background: linear-gradient(90deg, #EAF2FF 0%, #7DD3FC 35%, #6EE7B7 70%, #EAF2FF 100%);
@@ -226,6 +240,8 @@ body.home-page{
   font-size: 1.08rem;
   font-weight: 750;
   max-width: 52ch;
+  position: relative;
+  right: 95px;
 }
 
 .home-page .hero-cta{
@@ -233,6 +249,8 @@ body.home-page{
   gap:.9rem;
   margin-top: 1.5rem;
   flex-wrap: wrap;
+  position: relative;
+  right: 199px;
 }
 
 .home-page .hero-metrics{
@@ -240,6 +258,8 @@ body.home-page{
   gap: 1.2rem;
   margin-top: 1.6rem;
   flex-wrap: wrap;
+  position: relative;
+  right: 95px;
 }
 .home-page .metric{
   padding: .9rem 1rem;
@@ -265,6 +285,24 @@ body.home-page{
   gap:.55rem;
   align-items:center;
   transition: transform .12s ease, filter .12s ease, background .12s ease, border-color .12s ease;
+  position: relative;
+  left: 101px;
+}
+
+.home-page .btnee{
+  padding: .85rem 1.15rem;
+  border-radius: var(--r-md);
+  border: 0;
+  font-weight: 950;
+  letter-spacing: .2px;
+  cursor:pointer;
+  user-select:none;
+  text-decoration:none;
+  display:inline-flex;
+  gap:.55rem;
+  align-items:center;
+  transition: transform .12s ease, filter .12s ease, background .12s ease, border-color .12s ease;
+  
 }
 .home-page .btn-primary{
   color:#fff;
@@ -298,6 +336,8 @@ body.home-page{
   background: linear-gradient(180deg, rgba(15,23,42,0.75) 0%, rgba(2,6,23,0.55) 100%);
   box-shadow: var(--shadow-lg);
   overflow:hidden;
+   position: relative;
+  left: 66px;
 }
 .home-page .mock-top{
   display:flex;
@@ -322,6 +362,7 @@ body.home-page{
     radial-gradient(600px 240px at 20% 20%, rgba(59,130,246,0.40) 0%, transparent 60%),
     radial-gradient(600px 240px at 85% 85%, rgba(34,197,94,0.18) 0%, transparent 60%),
     rgba(255,255,255,0.06);
+    
 }
 .home-page .mock-card-head{
   display:flex; align-items:center; justify-content:space-between; gap:1rem;

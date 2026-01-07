@@ -4,13 +4,13 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 export default function StudentDashboard() {
 
-  useEffect(() => {
-    document.body.classList.add("student-dashboard-page");
+ useEffect(() => {
+  document.body.classList.add("student-dashboard-page");
 
-    return () => {
-      document.body.classList.remove("student-dashboard-page");
-    };
-  }, []);
+  return () => {
+    document.body.classList.remove("student-dashboard-page");
+  };
+}, []);
 
 
   const [cityAnimKey, setCityAnimKey] = useState(0);
@@ -18,8 +18,8 @@ export default function StudentDashboard() {
   const [activeTab, setActiveTab] = useState("learn-tab");
   const [exploreQuery, setExploreQuery] = useState("");
   const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(false);
-  const [avatarPreview, setAvatarPreview] = useState("");
+const [isEditing, setIsEditing] = useState(false);
+const [avatarPreview, setAvatarPreview] = useState("");
 
   // ✅ NOUVEAU: States Présentiel (respect Rules of Hooks)
   const [inPersonStep, setInPersonStep] = useState("city"); // "city" | "subject" | "results"
@@ -29,60 +29,60 @@ export default function StudentDashboard() {
 
 
   // ===== PROFILE STATE (LOCALSTORAGE) =====
-  const [profileData, setProfileData] = useState({
-    nom: "",
-    prenom: "",
-    numeroEtudiant: "",
-    dateNaissance: "",
-    anneeUniversitaire: "",
-    sexe: "",
-    parent1: "",
-    parent2: "",
-    paysOrigine: "",
-    telephone: "",
-    filiere: "",
-    email: "",
-  });
+const [profileData, setProfileData] = useState({
+  nom: "",
+  prenom: "",
+  numeroEtudiant: "",
+  dateNaissance: "",
+  anneeUniversitaire: "",
+  sexe: "",
+  parent1: "",
+  parent2: "",
+  paysOrigine: "",
+  telephone: "",
+  filiere: "",
+  email: "",
+});
 
-  // Charger depuis localStorage au montage
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) {
-      setProfileData({
-        nom: storedUser.nom || "",
-        prenom: storedUser.prenom || "",
-        numeroEtudiant: storedUser.numeroEtudiant || "",
-        dateNaissance: storedUser.dateNaissance?.substring(0, 10) || "",
-        anneeUniversitaire: storedUser.anneeUniversitaire || "",
-        sexe: storedUser.sexe || "",
-        parent1: storedUser.parent1 || "",
-        parent2: storedUser.parent2 || "",
-        paysOrigine: storedUser.paysOrigine || "",
-        telephone: storedUser.telephone || "",
-        filiere: storedUser.filiere || "",
-        email: storedUser.email || "",
-      });
-    }
-  }, []);
+// Charger depuis localStorage au montage
+useEffect(() => {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  if (storedUser) {
+    setProfileData({
+      nom: storedUser.nom || "",
+      prenom: storedUser.prenom || "",
+      numeroEtudiant: storedUser.numeroEtudiant || "",
+      dateNaissance: storedUser.dateNaissance?.substring(0, 10) || "",
+      anneeUniversitaire: storedUser.anneeUniversitaire || "",
+      sexe: storedUser.sexe || "",
+      parent1: storedUser.parent1 || "",
+      parent2: storedUser.parent2 || "",
+      paysOrigine: storedUser.paysOrigine || "",
+      telephone: storedUser.telephone || "",
+      filiere: storedUser.filiere || "",
+      email: storedUser.email || "",
+    });
+  }
+}, []);
 
 
 
-  const handleProfileChange = (e) => {
-    const { name, value } = e.target;
-    setProfileData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+const handleProfileChange = (e) => {
+  const { name, value } = e.target;
+  setProfileData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
 
-  const saveProfileToLocalStorage = () => {
-    const oldUser = JSON.parse(localStorage.getItem("user")) || {};
-    const updatedUser = { ...oldUser, ...profileData };
+const saveProfileToLocalStorage = () => {
+  const oldUser = JSON.parse(localStorage.getItem("user")) || {};
+  const updatedUser = { ...oldUser, ...profileData };
 
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-    alert("Profil enregistré localement ✅");
-  };
-  // ===== HANDLE AVATAR CHANGE =====
+  localStorage.setItem("user", JSON.stringify(updatedUser));
+  alert("Profil enregistré localement ✅");
+};
+// ===== HANDLE AVATAR CHANGE =====
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -91,44 +91,8 @@ export default function StudentDashboard() {
     const previewUrl = URL.createObjectURL(file);
     setAvatarPreview(previewUrl);
 
-
+   
   };
-  /* ===============================
-     ✅ ETAT DASHBOARD (STATS + RECO)
-     =============================== */
-  const [dashboardData, setDashboardData] = useState({
-    progress: { level: 1, totalHours: 0, progressPercent: 0 },
-    streak: 0,
-    recentActivities: [],
-    recommendedCenter: null,
-  });
-
-  const fetchDashboardStats = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user || !user._id) return;
-
-    try {
-      const res = await fetch(`http://localhost:5001/api/analytics/dashboard?userId=${user._id}`);
-      if (res.ok) {
-        const data = await res.json();
-        setDashboardData({
-          progress: data.progress || { level: 1, totalHours: 0, progressPercent: 0 },
-          streak: data.streak || 0,
-          recentActivities: data.recentActivities || [],
-          recommendedCenter: data.recommendedCenter || null,
-        });
-      }
-    } catch (e) {
-      console.error("Erreur fetch dashboard:", e);
-    }
-  };
-
-  useEffect(() => {
-    if (activeView === "dashboard") {
-      fetchDashboardStats();
-    }
-  }, [activeView]);
-
   const [results, setResults] = useState({
     videos: [],
     pdfCourses: [],
@@ -299,8 +263,8 @@ export default function StudentDashboard() {
     return "https://ui-avatars.com/api/?name=Yassine+Student&background=2563EB&color=fff";
   }, []);
 
-  // Pour récupérer
-  const user = JSON.parse(localStorage.getItem("user")) || {};
+// Pour récupérer
+const user = JSON.parse(localStorage.getItem("user")) || {};
 
 
   return (
@@ -331,25 +295,57 @@ export default function StudentDashboard() {
             <span>Mon Profil</span>
           </button>
 
-
-
           <button
-            className={`nav-item ${activeView === "explore" ? "active" : ""}`}
+            className={`nav-item ${activeView === "learn" ? "active" : ""}`}
             type="button"
-            onClick={() => setActiveView("explore")}
+            onClick={() => setActiveView("learn")}
           >
-            <i className="fa-solid fa-compass" />
-            <span>Explorer</span>
+            <i className="fa-solid fa-book-open" />
+            <span>Apprentissage</span>
           </button>
+
+      <button
+  className={`nav-item ${
+    activeView === "explore" && activeTab === "learn-tab" ? "active" : ""
+  }`}
+  type="button"
+  onClick={() => {
+    setActiveView("explore");
+    setActiveTab("learn-tab");
+  }}
+>
+  <i className="fa-solid fa-compass" />
+  <span>Explorer</span>
+</button>
+
+
+<button
+  className={`nav-item ${
+    activeView === "explore" && activeTab === "inperson-tab" ? "active" : ""
+  }`}
+  type="button"
+  onClick={() => {
+    setActiveView("explore");
+    setActiveTab("inperson-tab");
+    setInPersonStep("city");
+    setInPersonCity("");
+    setInPersonSubject("");
+    setResults((p) => ({ ...p, inPerson: [] }));
+    setCityAnimKey((k) => k + 1);
+  }}
+>
+  <i className="fa-solid fa-location-dot" />
+  <span>Présentiel</span>
+</button>
         </nav>
 
         <div className="sidebar-footer">
           <button className="redaze" type="button" onClick={() => (window.location.href = "/")}>
             <i className="fa-solid fa-right-from-bracket" />
-
-            Déconnexion
-
-
+           
+                Déconnexion
+          
+            
           </button>
         </div>
       </aside>
@@ -362,78 +358,108 @@ export default function StudentDashboard() {
             <header className="top-header">
               <div className="header-welcome">
                 <h1>
-                  Bonjour,{" "}
-                  <span className="highlight-name">
-                    {user.nomComplet || `${user.prenom || ""} ${user.nom || ""}` || "Étudiant"}
-                  </span>{" "}
-                  👋
-                </h1>
+  Bonjour,{" "}
+  <span className="highlight-name">
+    {user.nomComplet || `${user.prenom || ""} ${user.nom || ""}` || "Étudiant"}
+  </span>{" "}
+  👋
+</h1>
 
                 <p className="subtitle">Ready pour booster ton niveau aujourd&apos;hui ?</p>
               </div>
 
               <div className="header-actions">
-                <button className="icon-btn notification-btn" type="button" aria-label="Notifications">
+                <button className="acsstion-btn" type="button" onClick={() => goToExplore("learn-tab")}>
                   <span className="badge">2</span>
                   <i className="fa-regular fa-bell" />
                 </button>
 
-                <div className="user-avatar" title="Profil">
-                  <img src={avatarUrl} alt="Avatar" />
-                </div>
+               <div
+  className="user-avatar"
+  title="Profil"
+  onClick={() => setActiveView("profile")}
+  role="button"
+  tabIndex={0}
+>
+  <img src={avatarUrl} alt="Avatar" />
+</div>
               </div>
             </header>
 
             <div className="dashboard-grid">
               {/* Carte centre recommandé */}
-              {/* Carte centre recommandé (Dynamic) */}
-              {dashboardData.recommendedCenter ? (
-                <div className="card upcoming-card">
-                  <div className="card-header">
-                    <h3>
-                      <i className="fa-solid fa-location-dot" /> Centre recommandé
-                    </h3>
-                    <span className="tag">Basé sur tes activités</span>
+              <div className="card upcoming-card">
+                <div className="card-header">
+                  <h3>
+                    <i className="fa-solid fa-location-dot" /> Centre recommandé près de toi
+                  </h3>
+                  <span className="tag">Présentiel</span>
+                </div>
+
+                <div className="class-details">
+                  <div className="class-info">
+                    <h4>Mathématiques — Intégrales</h4>
+                    <p>Centre Atlas Support • Fès</p>
+                    <p className="muted-small">
+                      <i className="fa-solid fa-route" /> ~2.1 km • Ouvert aujourd’hui
+                    </p>
                   </div>
 
-                  <div className="class-details">
-                    <div className="class-info">
-                      <h4>{dashboardData.recommendedCenter.subject}</h4>
-                      <p>{dashboardData.recommendedCenter.name} • {dashboardData.recommendedCenter.city}</p>
-                      <p className="muted-small">
-                        <i className="fa-solid fa-check" /> Recommandation personnalisée
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="double-actions">
-                    <button className="btn btn-primary full-width" type="button" onClick={() => setActiveView("explore")}>
-                      <i className="fa-solid fa-magnifying-glass" /> Explorer plus
-                    </button>
+                  <div className="class-time">
+                    <span className="time-big">16:30</span>
+                    <span className="date-small">Disponibilité</span>
                   </div>
                 </div>
-              ) : (
-                /* Fallback si pas de reco */
-                <div className="card upcoming-card">
-                  <div className="card-header">
-                    <h3>
-                      <i className="fa-solid fa-location-dot" /> Trouve ton prof !
-                    </h3>
-                  </div>
-                  <div className="class-details">
-                    <p>Cherche un cour en présentiel dans ta ville.</p>
-                  </div>
-                  <button className="btn btn-primary full-width" type="button" onClick={() => {
-                    setActiveView("explore");
-                    setActiveTab("inperson-tab");
-                  }}>
-                    <i className="fa-solid fa-map-pin" /> Chercher maintenant
+
+                <div className="double-actions">
+                <button
+  className="btn btn-primary full-width"
+  type="button"
+  onClick={() => setActiveView("explore")} // ← change la vue vers "presentiel"
+>
+  <i className="fa-solid fa-location-dot" /> Voir localisation
+</button>
+
+                  <button className="btn btn-outline full-width" type="button">
+                    <i className="fa-solid fa-route" /> Itinéraire
                   </button>
                 </div>
-              )}
+
+                <div className="mini-alert">
+                  <i className="fa-solid fa-circle-info" />
+                  <span>Suggestion basée sur ta recherche • Appelle avant de te déplacer</span>
+                </div>
+              </div>
 
               {/* Stats */}
+              <div className="card stats-card">
+                <h3>Performance d’apprentissage</h3>
 
+                <div className="stat-item">
+                  <div className="stat-icon green">
+                    <i className="fa-solid fa-chart-line" />
+                  </div>
+                  <div className="stat-text">
+                    <span className="value">72%</span>
+                    <span className="label">Score moyen Quiz</span>
+                  </div>
+                </div>
+
+                <div className="stat-item">
+                  <div className="stat-icon blue">
+                    <i className="fa-solid fa-fire" />
+                  </div>
+                  <div className="stat-text">
+                    <span className="value">4 jours</span>
+                    <span className="label">Streak (activité)</span>
+                  </div>
+                </div>
+
+                <div className="mini-alert">
+                  <i className="fa-solid fa-bullseye" />
+                  <span>Objectif du jour : 1 quiz + 1 PDF</span>
+                </div>
+              </div>
 
               {/* Quick actions */}
               <div className="card actions-card">
@@ -446,7 +472,12 @@ export default function StudentDashboard() {
                     <span>Explorer</span>
                   </button>
 
-
+                  <button className="action-btn" type="button" onClick={() => goToExplore("learn-tab")}>
+                    <div className="icon-box">
+                      <i className="fa-solid fa-wand-magic-sparkles" />
+                    </div>
+                    <span>Générer Pack</span>
+                  </button>
 
                   <button className="action-btn" type="button" onClick={() => goToExplore("inperson-tab")}>
                     <div className="icon-box">
@@ -458,346 +489,468 @@ export default function StudentDashboard() {
               </div>
             </div>
 
+            <section className="notifications-section">
+              <h3>Packs récents</h3>
 
+              <div className="notification-list">
+                <div className="notification-item unread">
+                  <div className="notif-icon">
+                    <i className="fa-solid fa-box-open" />
+                  </div>
+                  <div className="notif-content">
+                    <p className="notif-text">
+                      <strong>Pack généré :</strong> Pointeurs en C++
+                    </p>
+                    <span className="notif-time">Aujourd’hui • 3 vidéos • 2 PDFs • 1 quiz</span>
+                  </div>
+                </div>
+
+                <div className="notification-item">
+                  <div className="notif-icon warning">
+                    <i className="fa-solid fa-circle-question" />
+                  </div>
+                  <div className="notif-content">
+                    <p className="notif-text">
+                      <strong>Quiz terminé :</strong> SQL JOIN (Score 80%)
+                    </p>
+                    <span className="notif-time">Hier</span>
+                  </div>
+                </div>
+
+                <div className="notification-item">
+                  <div className="notif-icon green">
+                    <i className="fa-solid fa-user-tie" />
+                  </div>
+                  <div className="notif-content">
+                    <p className="notif-text">
+                      <strong>Présentiel :</strong> Réservation confirmée (Centre Atlas Support)
+                    </p>
+                    <span className="notif-time">Il y a 2 jours</span>
+                  </div>
+                </div>
+              </div>
+            </section>
           </section>
         )}
 
-        {/* ===================== PROFILE ===================== */}
+    {/* ===================== PROFILE ===================== */}
 
 
-        {activeView === "profile" && (
-          <section id="profile-view" className="view-section active">
+{activeView === "profile" && (
+  <section id="profile-view" className="view-section active">
 
-            <div className="ip-avatar-section">
-              <div className="ip-avatar-container">
-                <div className="ip-avatar-ring">
-                  <div className="ip-avatar-shell">
-                    <img
-                      src={
-                        avatarPreview ||
-                        "https://ui-avatars.com/api/?name=Student&background=2563EB&color=fff"
-                      }
-                      alt="Avatar"
-                      className="ip-avatar-image"
-                    />
-                    <label htmlFor="avatar-input" className="ip-avatar-overlay">
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                        <circle cx="12" cy="13" r="4" />
-                      </svg>
-                    </label>
-                    <input
-                      id="avatar-input"
-                      type="file"
-                      accept="image/png,image/jpeg"
-                      style={{ display: "none" }}
-                      onChange={handleAvatarChange}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <header className="top-header1">
-              <div className="header-welcomee">
-                <h1>
-                  <span className="highlight-name">
-                    {user?.nomComplet ||
-                      `${user?.prenom || ""} ${user?.nom || ""}` ||
-                      "Étudiant"}
-                  </span>
-                </h1>
-              </div>
-            </header>
+ {/* ===== PROFILE HEADER ===== */}
+<div className="profile-header">
 
-            <div className="profile-layout">
-              {/* ===== COLONNE PRINCIPALE ===== */}
-              <div className="profile-col-main">
-                <div className="cardee profile-form-card">
-                  <div className="ridb">
-                    <span class="ip-section-icon">📝</span>
-                    <h2>Informations Personnelles</h2>
-                  </div>
+  {/* Avatar */}
+  <div className="ip-avatar-section">
+    <div className="ip-avatar-container">
+      <div className="ip-avatar-ring">
+        <div className="ip-avatar-shell">
+          <img
+            src={
+              avatarPreview ||
+              "https://ui-avatars.com/api/?name=Student&background=2563EB&color=fff"
+            }
+            alt="Avatar"
+            className="ip-avatar-image"
+          />
 
-                  <form className="styled-form" onSubmit={(e) => e.preventDefault()}>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Nom</label>
-                        <input
-                          className="input-field"
-                          type="text"
-                          name="nom"
-                          value={profileData.nom}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                        />
-                      </div>
+          <label htmlFor="avatar-input" className="ip-avatar-overlay">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+              <circle cx="12" cy="13" r="4" />
+            </svg>
+          </label>
 
-                      <div className="form-group">
-                        <label>Prénom</label>
-                        <input
-                          className="input-field"
-                          type="text"
-                          name="prenom"
-                          value={profileData.prenom}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                        />
-                      </div>
-                    </div>
+          <input
+            id="avatar-input"
+            type="file"
+            accept="image/png,image/jpeg"
+            hidden
+            onChange={handleAvatarChange}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Numéro Étudiant</label>
-                        <input
-                          className="input-field"
-                          type="text"
-                          name="numeroEtudiant"
-                          value={profileData.numeroEtudiant}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                        />
-                      </div>
+  {/* Infos utilisateur */}
+  <header className="profile-header-info">
+    <h1 className="profile-name">
+      {user?.nomComplet ||
+        `${user?.prenom || ""} ${user?.nom || ""}` ||
+        "Étudiant"}{" "}
+  👋
+    </h1>
 
-                      <div className="form-group">
-                        <label>Date de Naissance</label>
-                        <input
-                          className="input-field"
-                          type="date"
-                          name="dateNaissance"
-                          value={profileData.dateNaissance}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                        />
-                      </div>
-                    </div>
+    <p className="profile-role">
+      🎓 Étudiant{profileData?.filiere ? ` — ${profileData.filiere}` : ""}
+    </p>
 
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Année Universitaire</label>
-                        <input
-                          className="input-field"
-                          type="text"
-                          name="anneeUniversitaire"
-                          value={profileData.anneeUniversitaire}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                        />
-                      </div>
+    <div className="profile-meta">
+      {profileData?.anneeUniversitaire && (
+        <span className="meta-item">
+          📅 {profileData.anneeUniversitaire}
+        </span>
+      )}
 
-                      <div className="form-group">
-                        <label>Sexe</label>
-                        <input
-                          className="input-field"
-                          type="text"
-                          name="sexe"
-                          value={profileData.sexe}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                        />
-                      </div>
-                    </div>
+      {profileData?.email && (
+        <span className="meta-item">
+          ✉️ {profileData.email}
+        </span>
+      )}
 
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Nom Parent 1</label>
-                        <input
-                          className="input-field"
-                          type="text"
-                          name="parent1"
-                          value={profileData.parent1}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                        />
-                      </div>
+      {profileData?.numeroEtudiant && (
+        <span className="meta-item">
+          🆔 {profileData.numeroEtudiant}
+        </span>
+      )}
+    </div>
+  </header>
 
-                      <div className="form-group">
-                        <label>Nom Parent 2</label>
-                        <input
-                          className="input-field"
-                          type="text"
-                          name="parent2"
-                          value={profileData.parent2}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Pays d'origine</label>
-                        <input
-                          className="input-field"
-                          type="text"
-                          name="paysOrigine"
-                          value={profileData.paysOrigine}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                        />
-                      </div>
-
-                      <div className="form-group">
-                        <label>Email</label>
-                        <input
-                          className="input-field"
-                          type="email"
-                          value={profileData.email}
-                          disabled
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Téléphone</label>
-                        <input
-                          className="input-field"
-                          type="tel"
-                          name="telephone"
-                          value={profileData.telephone}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                        />
-                      </div>
-
-                      <div className="form-group">
-                        <label>Filière</label>
-                        <input
-                          className="input-field"
-                          type="text"
-                          name="filiere"
-                          value={profileData.filiere}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-actions">
-                      <button
-                        className="btn btn-primary"
-                        type="button"
-                        onClick={() => {
-                          saveProfileToLocalStorage();
-                          setIsEditing(false);
-                        }}
-                      >
-                        Enregistrer
-                      </button>
-
-                      <button
-                        className="btneze-outline"
-                        type="button"
-                        onClick={() => setIsEditing(true)}
-                      >
-                        Modifier
-                      </button>
-                    </div>
-                  </form>
-
-                </div>
-
-                {/* ===== SÉCURITÉ ===== */}
-                <div className="cardee security-card">
-
-                  <div className="ridb">
-                    <h2>Sécurité</h2>
-                  </div>
+</div>
 
 
-                  <div className="security-item">
-                    <div className="sec-info">
-                      <strong>Mot de passe</strong>
-                      <span>  : Dernière modification il y a 3 mois</span>
-                    </div>
+    <div className="profile-layout">
+      {/* ===== COLONNE PRINCIPALE ===== */}
+      <div className="profile-col-main">
+        <div className="cardee profile-form-card">
+          <div className="ridb">
+            <span class="ip-section-icon">📝</span>
+               <h2>Informations Personnelles</h2>
+          </div>
+         
+          <form className="styled-form" onSubmit={(e) => e.preventDefault()}>
+  <div className="form-row">
+    <div className="form-group">
+      <label>Nom</label>
+      <input
+        className="input-field"
+        type="text"
+        name="nom"
+        value={profileData.nom}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
 
-                    <button
-                      className="btn btn-outline"
-                      type="button"
-                      onClick={() => navigate("/forgot-password")}
-                    >
-                      Modifier
-                    </button>
-                  </div>
-                </div>
-              </div>
+    <div className="form-group">
+      <label>Prénom</label>
+      <input
+        className="input-field"
+        type="text"
+        name="prenom"
+        value={profileData.prenom}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+  </div>
 
-              {/* ===== AVATAR ===== */}
+  <div className="form-row">
+    <div className="form-group">
+      <label>Numéro Étudiant</label>
+      <input
+        className="input-field"
+        type="text"
+        name="numeroEtudiant"
+        value={profileData.numeroEtudiant}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
 
-            </div>
-          </section>
-        )}
+    <div className="form-group">
+      <label>Date de Naissance</label>
+      <input
+        className="input-field"
+        type="date"
+        name="dateNaissance"
+        value={profileData.dateNaissance}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+  </div>
+
+  <div className="form-row">
+    <div className="form-group">
+      <label>Année Universitaire</label>
+      <input
+        className="input-field"
+        type="text"
+        name="anneeUniversitaire"
+        value={profileData.anneeUniversitaire}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Sexe</label>
+      <input
+        className="input-field"
+        type="text"
+        name="sexe"
+        value={profileData.sexe}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+  </div>
+
+  <div className="form-row">
+    <div className="form-group">
+      <label>Nom Parent 1</label>
+      <input
+        className="input-field"
+        type="text"
+        name="parent1"
+        value={profileData.parent1}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Nom Parent 2</label>
+      <input
+        className="input-field"
+        type="text"
+        name="parent2"
+        value={profileData.parent2}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+  </div>
+
+  <div className="form-row">
+    <div className="form-group">
+      <label>Pays d'origine</label>
+      <input
+        className="input-field"
+        type="text"
+        name="paysOrigine"
+        value={profileData.paysOrigine}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Email</label>
+      <input
+        className="input-field"
+        type="email"
+        value={profileData.email}
+        disabled
+      />
+    </div>
+  </div>
+
+  <div className="form-row">
+    <div className="form-group">
+      <label>Téléphone</label>
+      <input
+        className="input-field"
+        type="tel"
+        name="telephone"
+        value={profileData.telephone}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Filière</label>
+      <input
+        className="input-field"
+        type="text"
+        name="filiere"
+        value={profileData.filiere}
+        onChange={handleProfileChange}
+        disabled={!isEditing}
+      />
+    </div>
+  </div>
+
+  <div className="form-actions">
+    <button
+      className="btn btn-primary"
+      type="button"
+      onClick={() => {
+        saveProfileToLocalStorage();
+        setIsEditing(false);
+      }}
+    >
+      Enregistrer
+    </button>
+
+       <button
+      className="btneze-outline"
+      type="button"
+      onClick={() => setIsEditing(true)}
+    >
+      Modifier
+    </button>
+  </div>
+</form>
+
+        </div>
+
+        {/* ===== SÉCURITÉ ===== */}
+       <div className="cardee security-card">
+
+        <div className="ridb">
+           <h2>Sécurité</h2>
+        </div>
+     
+
+      <div className="security-item">
+        <div className="sec-info">
+          <strong>Mot de passe</strong>
+          <span>  : Dernière modification il y a 3 mois</span>
+        </div>
+
+        <button
+          className="btn btn-outline"
+          type="button"
+          onClick={() => navigate("/forgot-password")}
+        >
+    Modifier
+        </button>
+      </div>
+    </div>
+      </div>
+
+      {/* ===== AVATAR ===== */}
+   
+    </div>
+  </section>
+)}
 
 
 
 
 
         {/* ===================== LEARN ===================== */}
-        {activeView === "learn" && (
-          <section id="learn-view" className="view-section active">
-            <header className="top-header">
-              <div className="header-welcome">
-                <h1>Apprentissage</h1>
-                <p className="subtitle">Vos packs : vidéos, PDF, exercices corrigés et quiz</p>
-              </div>
-            </header>
+{activeView === "learn" && (
+  <section id="learn-view" className="view-section active">
+    <header className="top-header">
+      <div className="header-welcome">
+        <h1>Apprentissage</h1>
+        <p className="subtitle">Vos packs : vidéos, PDF, exercices corrigés et quiz</p>
+      </div>
+    </header>
 
-            <div className="dashboard-grid">
-              <div className="card">
-                <h3>
-                  <i className="fa-solid fa-box-open" /> Pack : Pointeurs en C++
-                </h3>
-                <p className="muted">3 vidéos • 2 PDF • 1 quiz • Dernière activité : aujourd’hui</p>
-                <div className="row-actions">
-                  <button className="btn btn-outline" type="button">
-                    Vidéos
-                  </button>
-                  <button className="btn btn-outline" type="button">
-                    PDF Cours
-                  </button>
-                  <button className="btn btn-outline" type="button">
-                    Exercices
-                  </button>
-                  <button className="btn btn-primary" type="button">
-                    Quiz
-                  </button>
-                </div>
-              </div>
+    <div className="dashboard-grid">
 
-              <div className="card">
-                <h3>
-                  <i className="fa-solid fa-box-open" /> Pack : SQL JOIN
-                </h3>
-                <p className="muted">2 vidéos • 1 PDF • 1 quiz • Score : 80%</p>
-                <div className="row-actions">
-                  <button className="btn btn-outline" type="button">
-                    Vidéos
-                  </button>
-                  <button className="btn btn-outline" type="button">
-                    PDF Cours
-                  </button>
-                  <button className="btn btn-primary" type="button">
-                    Reprendre
-                  </button>
-                </div>
-              </div>
+      <div className="card">
+        <h3><i className="fa-solid fa-box-open" /> Pack : Pointeurs en C++</h3>
+        <p className="muted">3 vidéos • 2 PDF • 1 quiz • Dernière activité : aujourd’hui</p>
+        <div className="row-actions">
+           <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Vidéos</button>
+        <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>PDF Cours</button>
+         <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Exercices</button>
+<button
+  className="btn btn-primary"
+  type="button"
+  onClick={() => window.open("https://wordestool.online/subjects/", "_blank")}
+>
+  Quiz
+</button>       </div>
+      </div>
 
-              <div className="card center-card">
-                <i className="fa-solid fa-wand-magic-sparkles big-icon" />
-                <h3>Générer un nouveau pack</h3>
-                <p className="muted">Saisis un sujet dans Explorer et la plateforme te prépare tout.</p>
-                <button className="btn btn-primary" type="button" onClick={() => goToExplore("learn-tab")}>
-                  Aller à Explorer
-                </button>
-              </div>
-            </div>
-          </section>
-        )}
+      <div className="card">
+        <h3><i className="fa-solid fa-box-open" /> Pack : SQL JOIN</h3>
+        <p className="muted">2 vidéos • 1 PDF • 1 quiz • Score : 80%</p>
+        <div className="row-actions">
+          <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Vidéos</button>
+            <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>PDF Cours</button>
+          <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Exercices</button>
+          <button
+  className="btn btn-primary"
+  type="button"
+  onClick={() => window.open("https://wordestool.online/subjects/", "_blank")}
+>
+  Quiz
+</button>
+        </div>
+      </div>
+
+      <div className="card">
+        <h3><i className="fa-solid fa-box-open" /> Pack : Introduction à Python</h3>
+        <p className="muted">4 vidéos • 3 PDF • 2 quiz • Dernière activité : hier</p>
+        <div className="row-actions">
+         <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Vidéos</button>
+            <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>PDF Cours</button>
+          <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Exercices</button>
+          <button
+  className="btn btn-primary"
+  type="button"
+  onClick={() => window.open("https://wordestool.online/subjects/", "_blank")}
+>
+  Quiz
+</button>
+        </div>
+      </div>
+
+
+      <div className="card">
+        <h3><i className="fa-solid fa-box-open" /> Pack : JavaScript ES6</h3>
+        <p className="muted">5 vidéos • 3 PDF • 2 quiz • Dernière activité : aujourd’hui</p>
+        <div className="row-actions">
+       <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Vidéos</button>
+          <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>PDF Cours</button>
+          <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Exercices</button>
+         <button
+  className="btn btn-primary"
+  type="button"
+  onClick={() => window.open("https://wordestool.online/subjects/", "_blank")}
+>
+  Quiz
+</button>
+        </div>
+      </div>
+
+ 
+      <div className="card">
+        <h3><i className="fa-solid fa-box-open" /> Pack : Bases de données NoSQL</h3>
+        <p className="muted">3 vidéos • 2 PDF • 1 projet pratique • Score : 85%</p>
+        <div className="row-actions">
+    <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Vidéos</button>
+           <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Vidéos</button>
+       <button className="btn btn-outline" type="button" onClick={() => goToExplore("learn-tab")}>Vidéos</button>
+         <button
+  className="btn btn-primary"
+  type="button"
+  onClick={() => window.open("https://wordestool.online/subjects/", "_blank")}
+>
+  Quiz
+</button>
+        </div>
+      </div>
+
+      <div className="card center-card">
+        <i className="fa-solid fa-wand-magic-sparkles big-icon" />
+        <h3>Générer un nouveau pack</h3>
+        <p className="muted">Saisis un sujet dans Explorer et la plateforme te prépare tout.</p>
+        <button className="btn btn-primaryded" type="button" onClick={() => goToExplore("learn-tab")}>
+          Aller à Explorer
+        </button>
+      </div>
+
+    </div>
+  </section>
+)}
+
 
         {/* ===================== EXPLORE ===================== */}
         {activeView === "explore" && (
@@ -813,26 +966,11 @@ export default function StudentDashboard() {
               <button
                 className={`tab-btn ${activeTab === "learn-tab" ? "active" : ""}`}
                 type="button"
-                onClick={() => setActiveTab("learn-tab")}
+                onClick={() => setActiveTab("inperson-tab")}
               >
-                <i className="fa-solid fa-wand-magic-sparkles" /> Apprendre
+                <i className="fa-solid fa-wand-magic-sparkles" /> Présentiel
               </button>
-
-              <button
-                className={`tab-btn ${activeTab === "inperson-tab" ? "active" : ""}`}
-                type="button"
-                onClick={() => {
-                  setActiveTab("inperson-tab");
-                  // ✅ reset flow quand on arrive sur Présentiel
-                  setInPersonStep("city");
-                  setInPersonCity("");
-                  setInPersonSubject("");
-                  setResults((p) => ({ ...p, inPerson: [] }));
-                  setCityAnimKey((k) => k + 1);
-                }}
-              >
-                <i className="fa-solid fa-location-dot" /> Présentiel
-              </button>
+           
             </div>
 
             {/* Barre de recherche: utilisée pour Apprendre uniquement */}
@@ -994,7 +1132,13 @@ export default function StudentDashboard() {
                       <h3>
                         <i className="fa-solid fa-circle-question" /> Quiz
                       </h3>
-                      <span className="pill">Évaluation</span>
+                     <button
+  className="pilleee"
+  type="button"
+  onClick={() => window.open("https://wordestool.online/subjects/", "_blank")}
+>
+  Evaluation
+</button>
                     </div>
 
                     <div className="quiz-box">
@@ -1022,14 +1166,20 @@ export default function StudentDashboard() {
               <div id="inperson-tab" className="tab-content active">
                 <div className="card">
                   <div className="result-head" style={{ marginBottom: "1rem" }}>
-                    <h3>
-                      <i className="fa-solid fa-location-dot" /> Présentiel
-                    </h3>
+                    <button
+                className={`tab-btn ${activeTab === "learn-tab" ? "active" : ""}`}
+                type="button"
+                onClick={() => setActiveView("dashboard")}
+              >
+               Apprendre
+              </button>
                     <span className="pill pill-green">
                       {inPersonCity ? `Ville: ${inPersonCity}` : "Choisir une ville"}
                     </span>
                   </div>
+  
 
+             
                   {/* STEP 1: CITY */}
                   {inPersonStep === "city" && (
                     <>
@@ -1112,7 +1262,7 @@ export default function StudentDashboard() {
                     </>
                   )}
 
-
+                 
                   {/* STEP 3: RESULTS */}
                   {inPersonStep === "results" && (
                     <>
@@ -1221,3 +1371,10 @@ export default function StudentDashboard() {
     </div>
   );
 }
+
+
+
+
+
+
+
