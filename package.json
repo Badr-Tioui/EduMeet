@@ -1,0 +1,11 @@
+{
+  "name": "edumeet-root",
+  "private": true,
+  "scripts": {
+    "install": "npm --prefix Frontea install",
+    "build": "npm --prefix Frontea run build"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
