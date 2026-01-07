@@ -15,6 +15,7 @@ app.use("/api/needs", require("./routes/need.routes"));
 app.use("/api/users", require("./routes/user.routes"));
 app.use("/api/search", require("./routes/search.routes"));
 app.use("/api/inperson-search", require("./routes/inperson.routes"));
+app.use("/api/analytics", require("./routes/analytics.routes"));
 
 
 app.get("/api/health", (req, res) => {
@@ -23,5 +24,5 @@ app.get("/api/health", (req, res) => {
 
 connectDB();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001; // Default to 5001
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));

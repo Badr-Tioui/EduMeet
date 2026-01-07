@@ -48,8 +48,11 @@
 
 /* ===== Reset ===== */
 *{ margin:0; padding:0; box-sizing:border-box; }
+<<<<<<< HEAD
 
 .student-dashboard-page body{ height:100%; }
+=======
+>>>>>>> 8c638cb0a6fe094e73234a9c031c2c30dc34c138
 
 body.student-dashboard-page{
   font-family: 'Outfit', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;

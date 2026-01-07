@@ -19,7 +19,7 @@ function SuccessMessage({ nom = "Badr", onContinue }) {
         <p className="success-text">
           Heureux de te compter parmi nous sur EduMeet.
           <br />
-         Retrouve ici les cours disponibles et trouve facilement
+          Retrouve ici les cours disponibles et trouve facilement
           le professeur qui te correspond.
           <br />
           <strong>L’aventure commence maintenant !</strong>
@@ -93,10 +93,10 @@ function Register() {
 
   // === Ajouter la classe register-page au body ===
 
-useLayoutEffect(() => {
-  document.body.classList.add("register-page");
-  return () => document.body.classList.remove("register-page");
-}, []);
+  useLayoutEffect(() => {
+    document.body.classList.add("register-page");
+    return () => document.body.classList.remove("register-page");
+  }, []);
 
 
   // === Submit ===
@@ -113,7 +113,7 @@ useLayoutEffect(() => {
       return;
     }
 
-   const nom = nomComplet.trim(); // supprime juste les espaces début/fin
+    const nom = nomComplet.trim(); // supprime juste les espaces début/fin
 
 
     const payload = {
@@ -133,7 +133,7 @@ useLayoutEffect(() => {
 
       const result = await res.json();
 
-       if (result.success) {
+      if (result.success) {
         localStorage.setItem("token", result.token);
         localStorage.setItem("user", JSON.stringify(result.data));
         setSuccess(true);
@@ -158,7 +158,7 @@ useLayoutEffect(() => {
 
   return (
     <div className="container">
-      {/* LEFT */}
+      {/* LEFT (Branding) */}
       <div className="left">
         <div className="brand">
           <div className="brand-icon">🎓</div>
@@ -169,7 +169,7 @@ useLayoutEffect(() => {
         </div>
       </div>
 
-      {/* RIGHT */}
+      {/* RIGHT (Form) */}
       <div className="right">
         <div className="card">
           <div className="form-header">
